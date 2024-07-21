@@ -42,7 +42,7 @@ function Nav() {
 			// 	filter:
 			// }}
 		>
-			<div className="flex justify-between items-center">
+			<div className="flex justify-between items-center cursor-pointer" onClick={()=>router.push("/")}>
 				<Image
 					src="/assets/creatorships-logo.png"
 					alt="creatorships-logo"

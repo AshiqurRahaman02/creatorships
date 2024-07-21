@@ -1,6 +1,7 @@
 export const userRoutes = {
 	login: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/user/login`,
 	register: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/user/register`,
+	updateUserLogo: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/user/update-user-logo`,
 	createCheckoutSession: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/user/create-checkout-session`,
 	updateUserSubscription: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/user/update-user-session`
 };
@@ -32,6 +33,18 @@ export const signUp = async (
 	});
 	return response.json();
 };
+
+export const updateUserLogo = async (token: string, link: string)=>{
+	const response = await fetch(userRoutes.updateUserLogo, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: token
+		},
+		body: JSON.stringify({ link }),
+	});
+	return response.json();
+}
 
 // export const handelSubscribe = async (planType:string,userType:string )=>{
 // 	if(!userType){

@@ -17,7 +17,13 @@ import {
 } from "@/services/busineesService";
 import notify from "@/components/common/Notify";
 import { ToastContainer } from "react-toastify";
-import { createCreator, getCreator, updateCreator } from "@/services/creatorService";
+import {
+	createCreator,
+	getCreator,
+	updateCreator,
+} from "@/services/creatorService";
+import { imageRoutes } from "@/services/imageService";
+import { updateUserLogo } from "@/services/userService";
 
 const menuItems = [
 	{ href: "?active=profile", icon: "bx-user", label: "Profile" },
@@ -63,7 +69,7 @@ const Account = () => {
 		const query = new URLSearchParams(window.location.search);
 		let active = query.get("active");
 
-		if(active === "logout") {
+		if (active === "logout") {
 			localStorage.removeItem("userInfo");
 			localStorage.removeItem("token");
 
@@ -162,108 +168,291 @@ const Account = () => {
 					</>
 				</div>
 			</div>
+			<ToastContainer/>
 		</>
 	);
 };
 
 export default Account;
 
-const ProfileComponent = ({ userDetails }: any) => {
+const ProfileComponent = ({ userDetails, token }: any) => {
+	const [setUp, setSetup] = useState(false);
+
+	const [updatedLogo, setUpdatedLogo] = useState("");
+
+	const [imageUploaded, setImageUploaded] = useState(false);
+
+	const handleImageChange = (e: any) => {
+		const imageFile = e.target.files[0];
+
+		const reader = new FileReader();
+		reader.onload = (e: any) => {
+			setUpdatedLogo(e.target.result);
+			handelImageUpload(imageFile)
+		};
+		reader.readAsDataURL(imageFile);
+	};
+
+	const handelImageUpload = async (image:any) => {
+		if (!image) {
+			return;
+		}
+
+		const data = new FormData();
+		data.append("image", image);
+
+		const response = await fetch(imageRoutes.upload, {
+			method: "POST",
+			headers: {
+				Authorization: token,
+			},
+			body: data,
+		});
+		const { isError, imageResult, message } = await response.json();
+
+		if (isError) {
+			notify(message, "error");
+		} else {
+			setUpdatedLogo(imageResult?.url || "");
+			setImageUploaded(true);
+			notify(`${message}, You can update you logo`, "success");
+		}
+	};
+
+	const updateLogo = async () => {
+		try {
+			const res = await updateUserLogo(token, updatedLogo);
+			if (res.isError) {
+				notify(res.message, "warning");
+			} else {
+				localStorage.setItem("userInfo", JSON.stringify(res.user));
+
+				setTimeout(() => {
+					window.location.reload();
+				}, 3000);
+			}
+		} catch (error: any) {
+			notify(error.message, "error");
+		}
+	};
+
 	return (
 		<div className="w-full">
 			<div className="form m-auto">
-				<div style={{ width: "max-content", margin: "auto" }}>
-					{userDetails?.logo ? (
-						<Image
-							src={userDetails.logo}
-							alt="user logo"
-							width={80}
-							height={80}
-							className="p-1"
-							priority
-							title="Creatorships Logo"
-						/>
+				<div
+					style={{
+						width: "max-content",
+						margin: "auto",
+						textAlign: "center",
+					}}
+				>
+					{setUp ? (
+						<>
+							{updatedLogo ? (
+								<Image
+									src={updatedLogo}
+									alt="user logo"
+									width={160}
+									height={160}
+									className="p-1 border rounded-full"
+									priority
+								/>
+							) : (
+								<div className="border uppercase rounded-full text-9xl w-40 h-40  flex items-center justify-center">
+									<h1 className="-mt-5 p-0 ">
+										{userDetails?.name.split("")[0]}
+									</h1>
+								</div>
+							)}
+						</>
 					) : (
-						<div className="border uppercase rounded-full text-9xl w-40 h-40  flex items-center justify-center">
-							<h1 className="-mt-5 p-0 ">
-								{userDetails?.name.split("")[0]}
-							</h1>
-						</div>
+						<>
+							{userDetails?.logo ? (
+								<Image
+									src={userDetails.logo}
+									alt="user logo"
+									width={160}
+									height={160}
+									className="p-1 border rounded-full"
+									priority
+								/>
+							) : (
+								<div className="border uppercase rounded-full text-9xl w-40 h-40  flex items-center justify-center">
+									<h1 className="-mt-5 p-0 ">
+										{userDetails?.name.split("")[0]}
+									</h1>
+								</div>
+							)}
+						</>
+					)}
+					{!setUp && (
+						<>
+							<button
+								className="border px-2 py-1 mt-2 cursor-pointer"
+								onClick={() => setSetup(true)}
+							>
+								{`${userDetails?.logo ? "Change logo" : "Upload logo"}`}
+							</button>
+						</>
 					)}
 				</div>
-				<div>
-					<FormInput
-						label={`${
-							userDetails?.type === "creator" ? "Personal" : "Company"
-						} Name`}
-						type="text"
-						value={userDetails?.name}
-						onChange={(e) => console.log(e.target.value)}
-						icon={
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.4"
-								stroke="currentColor"
-								style={{ width: "24px" }}
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-								/>
-							</svg>
-						}
-						disabled={true}
-					/>
-				</div>
-				<div>
-					<FormInput
-						label={`${
-							userDetails?.type === "creator" ? "Personal" : "Company"
-						} Email`}
-						type="text"
-						value={userDetails?.email}
-						onChange={(e) => console.log(e.target.value)}
-						icon={
-							<svg
-								height="20"
-								viewBox="0 0 32 32"
-								width="20"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<g id="Layer_3" data-name="Layer 3">
-									<path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path>
-								</g>
-							</svg>
-						}
-						disabled={true}
-					/>
-				</div>
-				<div>
-					<FormInput
-						label="Password"
-						type="password"
-						value={"password"}
-						onChange={(e) => console.log(e.target.value)}
-						icon={
-							<span>
-								{" "}
-								<svg
-									height="20"
-									viewBox="-64 0 512 512"
-									width="20"
-									xmlns="http://www.w3.org/2000/svg"
+				{setUp ? (
+					<>
+						<div className="border p-3">
+							{/* <FormInput
+								label={`Paste logo link (recommended)`}
+								type="text"
+								value={updatedLogo}
+								onChange={(e) => setUpdatedLogo(e.target.value)}
+								icon={
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="24px"
+										viewBox="0 -960 960 960"
+										width="24px"
+										fill="#434343"
+									>
+										<path d="M360-390q-21 0-35.5-14.5T310-440q0-21 14.5-35.5T360-490q21 0 35.5 14.5T410-440q0 21-14.5 35.5T360-390Zm240 0q-21 0-35.5-14.5T550-440q0-21 14.5-35.5T600-490q21 0 35.5 14.5T650-440q0 21-14.5 35.5T600-390ZM480-160q134 0 227-93t93-227q0-24-3-46.5T786-570q-21 5-42 7.5t-44 2.5q-91 0-172-39T390-708q-32 78-91.5 135.5T160-486v6q0 134 93 227t227 93Zm0 80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-54-715q42 70 114 112.5T700-640q14 0 27-1.5t27-3.5q-42-70-114-112.5T480-800q-14 0-27 1.5t-27 3.5ZM177-581q51-29 89-75t57-103q-51 29-89 75t-57 103Zm249-214Zm-103 36Z" />
+									</svg>
+								}
+							/>
+							<div className="flex gap-2 items-center justify-around">
+								<hr className="border-black h-0.5 w-1/3 bg-black" />{" "}
+								<p>Or</p>{" "}
+								<hr className="border-black h-0.5 w-1/3 bg-black" />
+							</div> */}
+							<div className="flex gap-2 items-center justify-around">
+								<div>
+									<div className="flex-column">
+										<label>{"Choose your logo"}</label>
+									</div>
+									<div
+										className="inputForm"
+										style={{ height: "37px" }}
+									>
+										<input
+											type="file"
+											className="input"
+											onChange={handleImageChange}
+											style={{ borderRadius: "0px" }}
+											accept=".jpg, .png, "
+										/>
+									</div>
+								</div>
+
+								{/* <button
+									className={`border px-2 py-1.5 mt-2 rounded-lg  ${
+										!!image ? " cursor-pointer" : "cursor-no-drop"
+									}`}
+									disabled={!image}
+									onClick={handelImageUpload}
 								>
-									<path d="m336 512h-288c-26.453125 0-48-21.523438-48-48v-224c0-26.476562 21.546875-48 48-48h288c26.453125 0 48 21.523438 48 48v224c0 26.476562-21.546875 48-48 48zm-288-288c-8.8125 0-16 7.167969-16 16v224c0 8.832031 7.1875 16 16 16h288c8.8125 0 16-7.167969 16-16v-224c0-8.832031-7.1875-16-16-16zm0 0"></path>
-									<path d="m304 224c-8.832031 0-16-7.167969-16-16v-80c0-52.929688-43.070312-96-96-96s-96 43.070312-96 96v80c0 8.832031-7.167969 16-16 16s-16-7.167969-16-16v-80c0-70.59375 57.40625-128 128-128s128 57.40625 128 128v80c0 8.832031-7.167969 16-16 16zm0 0"></path>
-								</svg>
-							</span>
-						}
-						disabled={true}
-					/>
-				</div>
+									Upload
+								</button> */}
+							</div>
+
+							<div className="flex gap-2 items-center justify-around mt-5">
+								<button
+									className={`border px-2 py-1 mt-2  ${
+										imageUploaded
+											? " cursor-pointer"
+											: "cursor-no-drop"
+									} bg-green-500 rounded-lg`}
+									disabled={!imageUploaded}
+									onClick={updateLogo}
+								>
+									Update
+								</button>
+								<button
+									className="border px-2 py-1 mt-2 cursor-pointer bg-red-600 rounded-lg"
+									onClick={() => setSetup(false)}
+								>
+									Cancel
+								</button>
+							</div>
+						</div>
+					</>
+				) : (
+					<>
+						<div>
+							<FormInput
+								label={`${
+									userDetails?.type === "creator"
+										? "Personal"
+										: "Company"
+								} Name`}
+								type="text"
+								value={userDetails?.name}
+								onChange={(e) => console.log(e.target.value)}
+								icon={
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.4"
+										stroke="currentColor"
+										style={{ width: "24px" }}
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+										/>
+									</svg>
+								}
+								disabled={true}
+							/>
+						</div>
+						<div>
+							<FormInput
+								label={`${
+									userDetails?.type === "creator"
+										? "Personal"
+										: "Company"
+								} Email`}
+								type="text"
+								value={userDetails?.email}
+								onChange={(e) => console.log(e.target.value)}
+								icon={
+									<svg
+										height="20"
+										viewBox="0 0 32 32"
+										width="20"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<g id="Layer_3" data-name="Layer 3">
+											<path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path>
+										</g>
+									</svg>
+								}
+								disabled={true}
+							/>
+						</div>
+						<div>
+							<FormInput
+								label="Password"
+								type="password"
+								value={"password"}
+								onChange={(e) => console.log(e.target.value)}
+								icon={
+									<span>
+										{" "}
+										<svg
+											height="20"
+											viewBox="-64 0 512 512"
+											width="20"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path d="m336 512h-288c-26.453125 0-48-21.523438-48-48v-224c0-26.476562 21.546875-48 48-48h288c26.453125 0 48 21.523438 48 48v224c0 26.476562-21.546875 48-48 48zm-288-288c-8.8125 0-16 7.167969-16 16v224c0 8.832031 7.1875 16 16 16h288c8.8125 0 16-7.167969 16-16v-224c0-8.832031-7.1875-16-16-16zm0 0"></path>
+											<path d="m304 224c-8.832031 0-16-7.167969-16-16v-80c0-52.929688-43.070312-96-96-96s-96 43.070312-96 96v80c0 8.832031-7.167969 16-16 16s-16-7.167969-16-16v-80c0-70.59375 57.40625-128 128-128s128 57.40625 128 128v80c0 8.832031-7.167969 16-16 16zm0 0"></path>
+										</svg>
+									</span>
+								}
+								disabled={true}
+							/>
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);
@@ -384,20 +573,24 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 	return (
 		<div className="w-full">
 			<div className="form m-auto">
-			{setUp ? (
+				{setUp ? (
 					<button
 						onClick={() => {
 							businessDetails?.id
 								? handleUpdateSetup()
 								: handleCreateSetup();
 						}}
-								className="bg-green-600 text-white px-3 py-1 rounded mt-2 mb-3"
+						className="bg-green-600 text-white px-3 py-1 rounded mt-2 mb-3"
 					>
 						Save
 					</button>
 				) : (
-					<button onClick={() => setSetup(true)} 
-					className="bg-gray-600 text-white px-3 py-1 rounded mt-2 mb-3">Edit</button>
+					<button
+						onClick={() => setSetup(true)}
+						className="bg-gray-600 text-white px-3 py-1 rounded mt-2 mb-3"
+					>
+						Edit
+					</button>
 				)}
 				<div>
 					<div>
@@ -648,7 +841,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			...formData,
 			languages: [...formData.languages, ""],
 		});
-	}
+	};
 
 	const handleUpdateSetup = async () => {
 		if (
@@ -663,10 +856,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			return;
 		}
 		let body = { ...formData };
-		let { isError, message, creator }: any = await updateCreator(
-			body,
-			token
-		);
+		let { isError, message, creator }: any = await updateCreator(body, token);
 
 		if (isError) {
 			notify(message, "error");
@@ -690,10 +880,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			return;
 		}
 		let body = { ...formData };
-		let { isError, message, creator }: any = await createCreator(
-			body,
-			token
-		);
+		let { isError, message, creator }: any = await createCreator(body, token);
 
 		if (isError) {
 			notify(message, "error");
@@ -714,13 +901,17 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 								? handleUpdateSetup()
 								: handleCreateSetup();
 						}}
-								className="bg-green-600 text-white px-3 py-1 rounded mt-2 mb-3"
+						className="bg-green-600 text-white px-3 py-1 rounded mt-2 mb-3"
 					>
 						Save
 					</button>
 				) : (
-					<button onClick={() => setSetup(true)} 
-					className="bg-gray-600 text-white px-3 py-1 rounded mt-2 mb-3">Edit</button>
+					<button
+						onClick={() => setSetup(true)}
+						className="bg-gray-600 text-white px-3 py-1 rounded mt-2 mb-3"
+					>
+						Edit
+					</button>
 				)}
 				<div>
 					<div>
@@ -807,19 +998,16 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 									label={`Language`}
 									type="text"
 									value={language}
-									onChange={(e) =>
-
-										{
-											const updatedLanguages =
-												formData.languages.map((language, i) =>
-													i === index ? e.target.value : language
-												);
-											setFormData({
-												...formData,
-												languages: updatedLanguages,
-											});
-										}
-									}
+									onChange={(e) => {
+										const updatedLanguages = formData.languages.map(
+											(language, i) =>
+												i === index ? e.target.value : language
+										);
+										setFormData({
+											...formData,
+											languages: updatedLanguages,
+										});
+									}}
 									disabled={!setUp}
 								/>
 							</div>
