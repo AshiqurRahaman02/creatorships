@@ -22,7 +22,7 @@ export interface CreatorInfoAttributes {
 	location?: string;
 	languages?: string[];
 	website?: string;
-	social?: object;
+	social?: object[];
 }
 
 export interface BusinessInfoAttributes {
@@ -34,4 +34,23 @@ export interface BusinessInfoAttributes {
 	total_employee: number;
 	website: string;
 	social: object[];
+}
+
+export interface ApplicationAttributes {
+	id: number;
+	userId: number;
+	heading: string;
+	pricing: string;
+	endDate: string;
+	experience: string;
+	about: string;
+	languages: string[];
+	benefits: string;
+	no_of_openings: number;
+	user: {
+		user_id: number;
+		name: string;
+		verified: boolean;
+		logo: string;
+	};
 }

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Nav from "@/components/common/Nav";
 import {
+	ApplicationAttributes,
 	BusinessInfoAttributes,
 	CreatorInfoAttributes,
 	UserDetails,
@@ -24,18 +25,22 @@ import {
 } from "@/services/creatorService";
 import { imageRoutes } from "@/services/imageService";
 import { updateUserLogo } from "@/services/userService";
+import {
+	createApplication,
+	getUserApplications,
+	updateApplication,
+} from "@/services/applicationService";
 
 const menuItems = [
 	{ href: "?active=profile", icon: "bx-user", label: "Profile" },
 	{ href: "?active=portfolio", icon: "bx-shopping-bag", label: "Portfolio" },
 	{ href: "?active=dashboard", icon: "bx-home", label: "Dashboard" },
-	{ href: "?active=application", icon: "bx-music", label: "Applications" },
+	{ href: "?active=applications", icon: "bx-music", label: "Applications" },
 	{ href: "?active=subscription", icon: "bx-drink", label: "Subscription" },
 	{
-		href: "?active=chat",
+		href: "/chat",
 		icon: "bx-bell",
 		label: "Chats",
-		notificationCount: 5,
 	},
 	{ href: "?active=logout", icon: "bx-log-out", label: "Logout" },
 ];
@@ -112,11 +117,6 @@ const Account = () => {
 									<span className="text-sm font-medium">
 										{item.label}
 									</span>
-									{item.notificationCount && (
-										<span className="ml-3 mr-6 text-sm bg-red-100 rounded-full px-3 py-px text-red-500">
-											{item.notificationCount}
-										</span>
-									)}
 								</p>
 							</li>
 						))}
@@ -159,6 +159,11 @@ const Account = () => {
 									token={token}
 								/>
 							)
+						) : activeSession === "applications" ? (
+							<ApplicationComponent
+								userDetails={userDetails}
+								token={token}
+							/>
 						) : (
 							<ProfileComponent
 								userDetails={userDetails}
@@ -168,7 +173,7 @@ const Account = () => {
 					</>
 				</div>
 			</div>
-			<ToastContainer/>
+			<ToastContainer />
 		</>
 	);
 };
@@ -188,12 +193,12 @@ const ProfileComponent = ({ userDetails, token }: any) => {
 		const reader = new FileReader();
 		reader.onload = (e: any) => {
 			setUpdatedLogo(e.target.result);
-			handelImageUpload(imageFile)
+			handelImageUpload(imageFile);
 		};
 		reader.readAsDataURL(imageFile);
 	};
 
-	const handelImageUpload = async (image:any) => {
+	const handelImageUpload = async (image: any) => {
 		if (!image) {
 			return;
 		}
@@ -599,6 +604,7 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 						</div>
 						<div className="" style={{ minHeight: "content-fit" }}>
 							<textarea
+								rows={6}
 								className="border w-full p-1"
 								placeholder={`Enter your company about`}
 								value={formData?.about || ""}
@@ -920,6 +926,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 						</div>
 						<div className="" style={{ minHeight: "content-fit" }}>
 							<textarea
+								rows={6}
 								className="border w-full p-1"
 								placeholder={`Enter something about you`}
 								value={formData?.bio || ""}
@@ -1101,6 +1108,432 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 				</div>
 			</div>
 			<ToastContainer />
+		</div>
+	);
+};
+
+const initialFormDetails = {
+	id: 0,
+	heading: "",
+	about: "",
+	pricing: "",
+	endDate: "",
+	experience: "",
+	languages: [""],
+	benefits: "",
+	no_of_openings: 1,
+};
+
+const ApplicationComponent = ({ userDetails, token }: any) => {
+	const router = useRouter();
+	const [applications, setApplications] = useState<
+		ApplicationAttributes[] | []
+	>([]);
+	const [setUp, setSetup] = useState(false);
+	const [formDetails, setFormDetails] = useState(initialFormDetails);
+	// 	heading,
+	// 	pricing,
+	// 	endDate,
+	// 	experience,
+	// 	about,
+	// 	languages,
+	// 	benefits,
+	// 	no_of_openings,
+
+	useEffect(() => {
+		getApplicatioins();
+	}, [token]);
+
+	const getApplicatioins = async () => {
+		let { isError, message, applications }: any = await getUserApplications(
+			token
+		);
+
+		console.log(isError, message, applications);
+		if (isError) {
+			notify(message, "warning");
+		} else {
+			setApplications([...applications]);
+		}
+	};
+
+	const addLanguage = () => {
+		setFormDetails({
+			...formDetails,
+			languages: [...formDetails.languages, ""],
+		});
+	};
+
+	const handleCreateApplication = async () => {
+		if (
+			!formDetails.heading ||
+			!formDetails.about ||
+			!formDetails.pricing ||
+			!formDetails.endDate ||
+			!formDetails.experience ||
+			formDetails.languages.length <= 0 ||
+			!formDetails.benefits ||
+			!formDetails.no_of_openings
+		) {
+			console.log(formDetails);
+			notify("Please enter all information", "warning");
+			return;
+		}
+		let body = { ...formDetails };
+		let { isError, message, application }: any = await createApplication(
+			body,
+			token
+		);
+
+		if (isError) {
+			notify(message, "error");
+		} else {
+			notify(message, "success");
+			setSetup(false);
+			setFormDetails(initialFormDetails);
+			setApplications([application, ...applications]);
+		}
+	};
+
+	const handleUpdateApplication = async () => {
+		if (
+			!formDetails.heading ||
+			!formDetails.about ||
+			!formDetails.pricing ||
+			!formDetails.endDate ||
+			!formDetails.experience ||
+			formDetails.languages.length <= 0 ||
+			!formDetails.benefits ||
+			!formDetails.no_of_openings
+		) {
+			console.log(formDetails);
+			notify("Please enter all information", "warning");
+			return;
+		}
+		if (!formDetails.id) {
+			notify("Application not found", "warning");
+			return;
+		}
+		let body = { ...formDetails };
+		let { isError, message, application }: any = await updateApplication(
+			body,
+			formDetails.id,
+			token
+		);
+
+		if (isError) {
+			notify(message, "error");
+		} else {
+			notify(message, "success");
+			setSetup(false);
+			setFormDetails(initialFormDetails);
+			setApplications([application, ...applications]);
+		}
+	};
+
+	return (
+		<div className="flex-1">
+			{setUp ? (
+				<>
+					<div className="w-full">
+						<div className="form m-auto">
+							<div className="flex items-center">
+								<h1 className="font-bold text-xl">
+									Create application
+								</h1>
+								<div className="flex items-center gap-3 w-max ml-auto justify-end">
+									{formDetails.id !== 0 ? (
+										<button
+											onClick={handleUpdateApplication}
+											className="bg-green-600 text-white px-3 py-1 rounded mt-2 mb-3"
+										>
+											Update
+										</button>
+									) : (
+										<button
+											onClick={handleCreateApplication}
+											className="bg-green-600 text-white px-3 py-1 rounded mt-2 mb-3"
+										>
+											Create
+										</button>
+									)}
+
+									<button
+										onClick={() => {
+											setSetup(false);
+											setFormDetails(initialFormDetails);
+										}}
+										className="bg-red-600 text-white px-3 py-1 rounded mt-2 mb-3"
+									>
+										Cancel
+									</button>
+								</div>
+							</div>
+							<FormInput
+								label={`Heading`}
+								type="text"
+								value={formDetails.heading}
+								onChange={(e) =>
+									setFormDetails({
+										...formDetails,
+										heading: e.target.value,
+									})
+								}
+							/>
+							<div>
+								<div className="flex-column">
+									<label>About</label>
+								</div>
+								<div className="" style={{ minHeight: "content-fit" }}>
+									<textarea
+										rows={6}
+										className="border w-full p-1"
+										placeholder={`Enter your more information`}
+										value={formDetails?.about || ""}
+										onChange={(e) =>
+											setFormDetails({
+												...formDetails,
+												about: e.target.value,
+											})
+										}
+										disabled={!setUp}
+									/>
+								</div>
+							</div>
+							<FormInput
+								label={`Pricing with currency`}
+								type="text"
+								value={formDetails.pricing}
+								onChange={(e) =>
+									setFormDetails({
+										...formDetails,
+										pricing: e.target.value,
+									})
+								}
+							/>
+							<FormInput
+								label={`Expire Date`}
+								type="date"
+								value={formDetails.endDate}
+								onChange={(e) =>
+									setFormDetails({
+										...formDetails,
+										endDate: e.target.value,
+									})
+								}
+							/>
+							<FormInput
+								label={`Years for experience required`}
+								type="number"
+								value={formDetails.experience}
+								onChange={(e) =>
+									setFormDetails({
+										...formDetails,
+										experience: e.target.value,
+									})
+								}
+							/>
+							<FormInput
+								label={`No of reqirements required`}
+								type="number"
+								value={String(formDetails.no_of_openings)}
+								onChange={(e) =>
+									setFormDetails({
+										...formDetails,
+										no_of_openings: +e.target.value,
+									})
+								}
+							/>
+
+							<div className="languages-section">
+								<h3 className="mt-2 mb-2 font-bold">
+									Languages required :
+								</h3>
+								{formDetails.languages.map((language, index) => (
+									<div key={index} className="social-entry mb-4">
+										<FormInput
+											label={`Language`}
+											type="text"
+											value={language}
+											onChange={(e) => {
+												const updatedLanguages =
+													formDetails.languages.map(
+														(language, i) =>
+															i === index
+																? e.target.value
+																: language
+													);
+												setFormDetails({
+													...formDetails,
+													languages: updatedLanguages,
+												});
+											}}
+											disabled={!setUp}
+										/>
+									</div>
+								))}
+								{setUp && (
+									<button
+										type="button"
+										onClick={addLanguage}
+										className="bg-blue-500 text-white px-3 py-1 rounded mt-2 mb-3"
+									>
+										Add Language
+									</button>
+								)}
+							</div>
+							<div>
+								<div className="flex-column">
+									<label>Extra benefits</label>
+								</div>
+								<div className="" style={{ minHeight: "content-fit" }}>
+									<textarea
+										rows={5}
+										className="border w-full p-1"
+										placeholder={`Enter any extra benefit you offer`}
+										value={formDetails?.benefits || ""}
+										onChange={(e) =>
+											setFormDetails({
+												...formDetails,
+												benefits: e.target.value,
+											})
+										}
+										disabled={!setUp}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</>
+			) : (
+				<div className="flex flex-col gap-5 p-6 border">
+					<div className="flex">
+						<h1 className="font-bold text-5xl">My applications :</h1>
+						<button
+							onClick={() => setSetup(true)}
+							className="bg-gray-600 text-white px-3 py-1 rounded mt-2 mb-3 w-max ml-auto justify-end"
+						>
+							Add application
+						</button>
+					</div>
+					<ul
+						role="list"
+						className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+					>
+						{applications.length > 0 ? (
+							<>
+								{applications.map(
+									(
+										application: ApplicationAttributes,
+										index: number
+									) => (
+										<li
+											className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-200 shadow"
+											key={index}
+										>
+											<div className="flex flex-1 flex-col p-8">
+												<dl className="mt-1 flex flex-grow flex-col gap-3 justify-between">
+													<dt className="sr-only">Title</dt>
+													<dd className="text-3xl text-black font-semibold">
+														{application.heading}
+													</dd>
+													<dt className="sr-only">Price</dt>
+													<dd className="text-sm text-gray-500">
+														<span className="text-gray-700 font-semibold">{`Price: `}</span>
+														{application.pricing}
+													</dd>
+													<dt className="sr-only">Expire date</dt>
+													<dd className="text-sm text-gray-500">
+														<span className="text-gray-700 font-semibold">{`Expire date: `}</span>
+
+														{application.endDate}
+													</dd>
+
+													<dt className="sr-only">Languages</dt>
+													<dd className="text-sm text-gray-500 flex gap-2">
+														{application.languages.map((lang: string,i:number) =>(
+															<span className="bg-white rounded-md border px-1" key={i}>{lang}</span>
+														))}
+													</dd>
+												</dl>
+												<div className="flex gap-3 mt-6">
+													<Image
+														src={userDetails.logo}
+														alt="user logo"
+														width={80}
+														height={80}
+														className="h-16 w-16 flex-shrink-0 rounded-full border-black p-1"
+														priority
+													/>
+													<h3 className="mt-3 text-xl font-medium text-gray-900">
+														{userDetails.name}
+													</h3>
+												</div>
+											</div>
+											<div>
+												<div className="-mt-px flex divide-x divide-gray-200 ">
+													<div className="-ml-px flex w-0 flex-1">
+														<p className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"  onClick={()=>router.push(`/application/${application.id}`)}>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																height="24px"
+																viewBox="0 -960 960 960"
+																width="24px"
+																fill="#444"
+																className="h-5 w-5 text-gray-400 hover:text-gray-50"
+															>
+																<path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+															</svg>
+															Preview
+														</p>
+														<hr className="h-full w-0.5 bg-gray-500" />
+														<p
+															className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
+															onClick={() => {
+																setSetup(true);
+																setFormDetails({
+																	id: application.id,
+																	heading: application.heading,
+																	about: application.about,
+																	pricing: application.pricing,
+																	endDate: application.endDate,
+																	experience:
+																		application.experience,
+																	languages: [
+																		...application.languages,
+																	],
+																	benefits:
+																		application.benefits,
+																	no_of_openings:
+																		application.no_of_openings,
+																});
+															}}
+														>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																height="24px"
+																viewBox="0 -960 960 960"
+																width="24px"
+																fill="#444"
+																className="h-5 w-5 text-gray-400 hover:text-gray-50"
+															>
+																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+															</svg>
+															Update
+														</p>
+													</div>
+												</div>
+											</div>
+										</li>
+									)
+								)}
+							</>
+						) : (
+							<>{`You don't have any application`}</>
+						)}
+					</ul>
+				</div>
+			)}
 		</div>
 	);
 };

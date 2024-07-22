@@ -71,11 +71,11 @@ function Business() {
 						sidebarOpen ? "translate-x-0" : "-translate-x-full"
 					} md:translate-x-0 md:relative`}
 				>
-					<div className="flex items-center justify-center h-20 shadow-md">
+					<di*v className="flex items-center justify-center h-20 shadow-md">
 						<h1 className="text-3xl font-bold uppercase text-indigo-500">
 							{userDetails?.type}
 						</h1>
-					</div>
+					</di*v>
 					<ul className="flex flex-col py-4 justify-start gap-2">
 						{menuItems.map((item, index) => (
 							<li key={index} className="border cursor-pointer">

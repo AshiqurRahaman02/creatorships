@@ -2,18 +2,16 @@ export const businessRoutes = {
 	createBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/create`,
 	updateBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/update`,
 	deleteBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/delete`,
-    
+
 	getBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/get-business`,
 	getAllBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/get-all-businesses`,
-	searchBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/search-businesses`
+	searchBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/search-businesses`,
 };
 
-
-
-export const createBusiness = async (body:any,token: string) => {
-	console.log(token)
-	if(!token){
-		return ;
+export const createBusiness = async (body: any, token: string) => {
+	console.log(token);
+	if (!token) {
+		return;
 	}
 	const response = await fetch(businessRoutes.createBusiness, {
 		method: "POST",
@@ -26,10 +24,9 @@ export const createBusiness = async (body:any,token: string) => {
 	return response.json();
 };
 
-
-export const updateBusiness = async (body:any,token: string) => {
-	if(!token){
-		return ;
+export const updateBusiness = async (body: any, token: string) => {
+	if (!token) {
+		return;
 	}
 	const response = await fetch(businessRoutes.updateBusiness, {
 		method: "PUT",
@@ -43,12 +40,11 @@ export const updateBusiness = async (body:any,token: string) => {
 };
 
 export const getBusiness = async (user_id: string) => {
-    const response = await fetch(`${businessRoutes.getBusiness}/${user_id}`);
+	const response = await fetch(`${businessRoutes.getBusiness}/${user_id}`);
 	return response.json();
-}
-
+};
 
 export const getAllBusiness = async () => {
-    const response = await fetch(`${businessRoutes.getAllBusiness}`);
+	const response = await fetch(`${businessRoutes.getAllBusiness}`);
 	return response.json();
-}
+};
