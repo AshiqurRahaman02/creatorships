@@ -7,7 +7,7 @@ interface FormInputProps {
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	icon?: React.ReactNode;
 	icon2?: React.ReactNode;
-	disabled?: boolean; // Add the disabled prop
+	disabled?: boolean;
 }
 
 const FormInput: React.FC<FormInputProps> = ({

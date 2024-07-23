@@ -1,7 +1,7 @@
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
 import { getAllCreator } from "@/services/creatorService";
-import { UserDetails } from "@/utils/interface";
+import { CreatorInfoAttributes, UserDetails } from "@/utils/interface";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -129,7 +129,7 @@ function Creator() {
 							role="list"
 							className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
 						>
-							{creators.map((creator: any, index: number) => (
+							{creators.map((creator: CreatorInfoAttributes, index: number) => (
 								<li
 									className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-200 text-center shadow"
 									key={index}
@@ -166,9 +166,9 @@ function Creator() {
 									<div>
 										<div className="-mt-px flex divide-x divide-gray-200 ">
 											<div className="-ml-px flex w-0 flex-1">
-												<a
-													href="tel:+4407393145546"
+												<p
 													className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+													onClick={()=>router.push(`/chat/?active=${creator.user_id}`)}
 												>
 													<svg
 														xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +181,7 @@ function Creator() {
 														<path d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z" />
 													</svg>
 													Chat
-												</a>
+												</p>
 											</div>
 										</div>
 									</div>

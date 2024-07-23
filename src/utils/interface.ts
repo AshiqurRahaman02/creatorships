@@ -23,6 +23,12 @@ export interface CreatorInfoAttributes {
 	languages?: string[];
 	website?: string;
 	social?: object[];
+	user: {
+		user_id: number;
+		name: string;
+		verified: boolean;
+		logo: string;
+	};
 }
 
 export interface BusinessInfoAttributes {
@@ -34,6 +40,12 @@ export interface BusinessInfoAttributes {
 	total_employee: number;
 	website: string;
 	social: object[];
+	user: {
+		user_id: number;
+		name: string;
+		verified: boolean;
+		logo: string;
+	};
 }
 
 export interface ApplicationAttributes {
@@ -48,6 +60,33 @@ export interface ApplicationAttributes {
 	benefits: string;
 	no_of_openings: number;
 	user: {
+		user_id: number;
+		name: string;
+		verified: boolean;
+		logo: string;
+	};
+}
+
+export interface ChatAttributes {
+	id: number;
+	sender_id: number;
+	receiver_id: number;
+	chats: {
+		message: string;
+		date: string;
+		sender_id: number;
+		read: boolean;
+
+	}[];
+	blockedBy?: number | null;
+
+	sender: {
+		user_id: number;
+		name: string;
+		verified: boolean;
+		logo: string;
+	};
+	receiver: {
 		user_id: number;
 		name: string;
 		verified: boolean;

@@ -55,7 +55,7 @@ export default function Home() {
 								onClick={() => {
 									if (!userDetails) {
 										router.push("/login");
-									}else {
+									} else {
 										router.push("/application");
 									}
 								}}
