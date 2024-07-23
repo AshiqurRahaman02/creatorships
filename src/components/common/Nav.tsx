@@ -57,7 +57,7 @@ function Nav() {
 				</h1>
 			</div>
 			<div className="flex justify-between items-center gap-5">
-				<div>
+				<div onClick={() => router.push("/chat")}>
 					<Image
 						src="/icon/chat.svg"
 						alt="chat-svg"
