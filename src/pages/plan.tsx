@@ -67,7 +67,6 @@ const yearlyPlan = {
 
 export default function Plan() {
 	const router = useRouter();
-	const { pathname, query, asPath } = router;
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
 
@@ -482,7 +481,7 @@ const Message = ({ message }: any) => {
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
 							viewBox="0 0 24 24"
-							stroke-width="1.5"
+							strokeWidth="1.5"
 							stroke="currentColor"
 							className="w-8 h-8 text-red-600"
 						>

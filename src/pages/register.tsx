@@ -98,7 +98,7 @@ function SignUp() {
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
-									stroke-width="1.4"
+									strokeWidth="1.4"
 									stroke="currentColor"
 									style={{ width: "24px" }}
 								>
@@ -209,7 +209,7 @@ function SignUp() {
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
-									stroke-width="1.4"
+									strokeWidth="1.4"
 									stroke="currentColor"
 									style={{ width: "24px" }}
 								>
@@ -224,7 +224,7 @@ function SignUp() {
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
-									stroke-width="1.4"
+									strokeWidth="1.4"
 									stroke="currentColor"
 									style={{ width: "24px" }}
 								>

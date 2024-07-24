@@ -64,7 +64,7 @@ function Applications() {
 	return (
 		<>
 			<Head>
-				<title>Business</title>
+				<title>Applications</title>
 			</Head>
 			<Nav />
 			<div className="min-h-screen flex  bg-gray-100">
