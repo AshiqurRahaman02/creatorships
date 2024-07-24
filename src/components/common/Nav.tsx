@@ -31,7 +31,7 @@ function Nav() {
 				scrolling
 					? "backdrop-blur-sm shadow-sm"
 					: "backdrop-blur-0  shadow-none"
-			}`}
+			} bg-white`}
 			// style={{
 			// 	maxWidth: "100vw",
 			// 	padding: "0px 4vw",
