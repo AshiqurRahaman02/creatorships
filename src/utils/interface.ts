@@ -17,18 +17,23 @@ export interface UserDetails {
 export interface CreatorInfoAttributes {
 	id: number;
 	user_id: number;
-	bio?: string;
+	bio: string;
 	phone_number?: string;
-	location?: string;
-	languages?: string[];
-	website?: string;
-	social?: object[];
+	location: string;
+	languages: string[];
+	website: string;
+	social: {link: string;
+		name: string;
+		followers: string;}[];
 	user: {
 		user_id: number;
 		name: string;
 		verified: boolean;
 		logo: string;
 	};
+
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface BusinessInfoAttributes {
@@ -39,13 +44,18 @@ export interface BusinessInfoAttributes {
 	industry: string;
 	total_employee: number;
 	website: string;
-	social: object[];
+	social: {link: string;
+		name: string;
+		followers: string;}[];
 	user: {
 		user_id: number;
 		name: string;
 		verified: boolean;
 		logo: string;
 	};
+
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface ApplicationAttributes {
