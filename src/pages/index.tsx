@@ -111,6 +111,35 @@ const HeroSection = ({ userDetails, router }: any) => {
 							Learn more <span aria-hidden="true">→</span>
 						</button>
 					</div>
+					<h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-xl mt-10">
+					{`Don't forget to explore`}
+					</h1>
+					<div className="mt-5 flex items-center justify-center gap-x-6">
+						<button
+							onClick={() => {
+								if (!userDetails) {
+									router.push("/login");
+								} else {
+									router.push("/creator");
+								}
+							}}
+							className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						>
+							Creators
+						</button>
+						<button
+							onClick={() => {
+								if (!userDetails) {
+									router.push("/login");
+								} else {
+									router.push("/business");
+								}
+							}}
+							className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						>
+							Businesses
+						</button>
+					</div>
 				</div>
 			</div>
 			<div

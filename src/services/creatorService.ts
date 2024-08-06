@@ -39,7 +39,7 @@ export const updateCreator = async (body: any, token: string) => {
 	return response.json();
 };
 
-export const getCreator = async (user_id: string) => {
+export const getCreator = async (user_id: number) => {
 	const response = await fetch(`${creatorRoutes.getCreator}/${user_id}`);
 	return response.json();
 };
