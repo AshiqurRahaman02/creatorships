@@ -296,7 +296,12 @@ function Applications() {
 																Details
 															</p>
 															<hr className="h-full w-0.5 bg-gray-500" />
-															<p className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer">
+															<p className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
+														onClick={() =>
+															router.push(
+																`/chat/?active=${application.userId}`
+															)
+														}>
 																<svg
 																	xmlns="http://www.w3.org/2000/svg"
 																	height="24px"
@@ -309,6 +314,7 @@ function Applications() {
 																</svg>
 																Chat
 															</p>
+															
 														</div>
 													</div>
 												</div>

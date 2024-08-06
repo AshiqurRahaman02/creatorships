@@ -39,7 +39,7 @@ export const updateBusiness = async (body: any, token: string) => {
 	return response.json();
 };
 
-export const getBusiness = async (user_id: string) => {
+export const getBusiness = async (user_id: number) => {
 	const response = await fetch(`${businessRoutes.getBusiness}/${user_id}`);
 	return response.json();
 };
