@@ -111,10 +111,13 @@ const HeroSection = ({ userDetails, router }: any) => {
 							Learn more <span aria-hidden="true">→</span>
 						</button>
 					</div>
-					<h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-xl mt-10">
-					{`Don't forget to explore`}
+					{/* <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-xl mt-10">
+						{`Don't forget to explore`}
+					</h1> */}
+					<h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-3xl mt-10">
+						{`Looking for `}
 					</h1>
-					<div className="mt-5 flex items-center justify-center gap-x-6">
+					{/* <div className="mt-5 flex items-center justify-center gap-x-6">
 						<button
 							onClick={() => {
 								if (!userDetails) {
@@ -139,6 +142,83 @@ const HeroSection = ({ userDetails, router }: any) => {
 						>
 							Businesses
 						</button>
+					</div> */}
+					<div className="mt-5 flex items-center justify-center gap-x-6">
+						<div
+							onClick={() => {
+								if (!userDetails) {
+									router.push("/login");
+								} else {
+									router.push("/creator");
+								}
+							}}
+							className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer"
+						>
+							<div className="relative group">
+								<Image
+									src="/assets/creator-img.png"
+									alt="creatorships-logo"
+									width={100}
+									height={100}
+									className="p-1 rounded-full"
+									priority
+									title="Creatorships Logo"
+								/>
+								<span
+									className="absolute inset-0 flex justify-center items-center invisible group-hover:visible rounded-full"
+									style={{ backgroundColor: "rgba(244,244,244,0.5)" }}
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="24px"
+										viewBox="0 -960 960 960"
+										width="24px"
+										fill="#444"
+									>
+										<path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
+									</svg>
+								</span>
+							</div>
+							<p className="text-xl">Creators</p>
+						</div>
+						<div
+							onClick={() => {
+								if (!userDetails) {
+									router.push("/login");
+								} else {
+									router.push("/business");
+								}
+							}}
+							className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer"
+						>
+							<div className="relative group">
+								<Image
+									src="/assets/business-img.png"
+									alt="creatorships-logo"
+									width={100}
+									height={100}
+									className="p-1 rounded-full"
+									priority
+									title="Creatorships Logo"
+								/>
+								<span
+									className="absolute inset-0 flex justify-center items-center invisible group-hover:visible rounded-full"
+									style={{ backgroundColor: "rgba(244,244,244,0.5)" }}
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="24px"
+										viewBox="0 -960 960 960"
+										width="24px"
+										fill="#444"
+									>
+										<path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
+									</svg>
+								</span>
+							</div>
+
+							<p className="text-xl">Businesses</p>
+						</div>
 					</div>
 				</div>
 			</div>

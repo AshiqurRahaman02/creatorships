@@ -30,6 +30,7 @@ import {
 	getUserApplications,
 	updateApplication,
 } from "@/services/applicationService";
+import Loading from "@/components/common/Loading";
 
 const menuItems = [
 	{ href: "?active=profile", icon: "bx-user", label: "Profile" },
@@ -50,6 +51,7 @@ const Account = () => {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
+	const [loading, setLoading] = useState(true)
 
 	const [activeSession, setActiveSession] = useState("");
 
@@ -58,13 +60,12 @@ const Account = () => {
 		const token = localStorage.getItem("token");
 		if (userDetails && token) {
 			const parsedUserDetails = JSON.parse(userDetails);
-			console.log(token);
 			setToken(token);
 			setUserDetails(parsedUserDetails);
 		} else {
 			router.push("/login");
 		}
-	}, []);
+	}, [router]);
 
 	const toggleSidebar = () => {
 		setSidebarOpen(!sidebarOpen);
@@ -84,7 +85,7 @@ const Account = () => {
 		}
 
 		setActiveSession(active || "profile");
-	}, [router.query]);
+	}, [router]);
 
 	return (
 		<>
@@ -92,12 +93,12 @@ const Account = () => {
 				<title>Account</title>
 			</Head>
 			<Nav />
-			<div className="min-h-screen flex  bg-gray-100">
+			<div className="h-max flex  bg-gray-100">
 				{/* Sidebar */}
 				<div
-					className={`flex flex-col w-56 min-h-screen bg-white rounded-r-3xl overflow-hidden transition-transform transform ${
+					className={`flex flex-col min-w-64 h-max bg-white rounded-2xl overflow-hidden transition-transform transform ${
 						sidebarOpen ? "translate-x-0" : "-translate-x-full"
-					} md:translate-x-0 md:relative`}
+					} md:translate-x-0 absolute z-10 p-3 m-5`}
 				>
 					<div className="flex items-center justify-center h-20 shadow-md">
 						<h1 className="text-3xl font-bold uppercase text-indigo-500">
@@ -124,13 +125,13 @@ const Account = () => {
 				</div>
 
 				{/* Main content */}
-				<div className="flex-1 p-6 border">
+				<div className="flex-1 p-6 border relative">
 					<button
 						onClick={toggleSidebar}
-						className="block md:hidden text-indigo-500 focus:outline-none"
+						className="block md:hidden text-indigo-500 focus:outline-none absolute right-5 top-5 border"
 					>
 						<svg
-							className="w-6 h-6"
+							className="w-8 h-8"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -146,7 +147,7 @@ const Account = () => {
 					</button>
 					{/* Main content goes here */}
 
-					<>
+					<div className="md:ml-56">
 						{activeSession === "portfolio" ? (
 							userDetails?.type === "business" ? (
 								<BusinessPortfolioComponent
@@ -170,9 +171,10 @@ const Account = () => {
 								token={token}
 							/>
 						)}
-					</>
+					</div>
 				</div>
 			</div>
+			{loading && <Loading />}
 			<ToastContainer />
 		</>
 	);
@@ -858,6 +860,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			formData.languages.length <= 0 ||
 			!formData.website
 		) {
+			console.log(formData)
 			notify("Please enter all information", "warning");
 			return;
 		}

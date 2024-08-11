@@ -1,3 +1,4 @@
+import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
 import {
@@ -21,6 +22,7 @@ function Creator() {
 	const { id } = router.query;
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
+	const [loading, setLoading] = useState(true)
 
 	const [creator, setCreator] = useState<CreatorInfoAttributes | null>(null);
 	const [applications, setApplications] = useState<ApplicationAttributes[]>([
@@ -57,9 +59,9 @@ function Creator() {
 	}, [id, router]);
 	useEffect(() => {
 		const getCreatorDetails = async () => {
-			if(!id){
-				router.push("/creator")
-				return
+			if (!id) {
+				router.push("/creator");
+				return;
 			}
 			let { isError, message, creator, applications }: any =
 				await getCreator(+id || 0);
@@ -67,10 +69,12 @@ function Creator() {
 			if (isError) {
 				notify(message, "warning");
 			} else {
-				console.log(creator)
+				console.log(creator);
 				setApplications(applications);
 				setCreator(creator);
 			}
+
+			setLoading(false)
 		};
 		if (!creator) {
 			getCreatorDetails();
@@ -83,7 +87,7 @@ function Creator() {
 				<title>Creator</title>
 			</Head>
 			<Nav />
-			<div className="min-w-80 max-w-4xl flex  bg-gray-100 m-auto">
+			<div className="min-w-80 max-w-3xl flex  bg-gray-100 m-auto">
 				<div className="flex-1 p-6 border">
 					<div className="flex gap-3 items-center mt-6">
 						<p className="min-w-36 text-pink-800">User information :</p>{" "}
@@ -157,13 +161,18 @@ function Creator() {
 							{creator?.location}
 						</p>
 					</div>
-					<div className="flex gap-3 items-center mt-3">
+					<div className="flex gap-3 items-center my-3">
 						<p className="min-w-36 text-pink-800">Applications :</p>{" "}
 						<hr className="h-0.5 w-full bg-gray-700" />
 					</div>
 					<ul
 						role="list"
-						className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+						className="gap-3"
+						style={{
+							display: "grid",
+							gridTemplateColumns:
+								"repeat(auto-fit, minmax(300px, 1fr))",
+						}}
 					>
 						{applications.length > 0 ? (
 							<>
@@ -173,8 +182,9 @@ function Creator() {
 										index: number
 									) => (
 										<li
-											className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-200 shadow"
+											className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-100 shadow"
 											key={index}
+											style={{ maxWidth: "400px" }}
 										>
 											<div className="flex flex-1 flex-col p-8">
 												<dl className="mt-1 flex flex-grow flex-col gap-3 justify-between">
@@ -196,16 +206,19 @@ function Creator() {
 
 													<dt className="sr-only">Languages</dt>
 													<dd className="text-sm text-gray-500 flex gap-2">
-														{application.languages.map(
-															(lang: string, i: number) => (
-																<span
-																	className="bg-white rounded-md border px-1"
-																	key={i}
-																>
-																	{lang}
-																</span>
-															)
-														)}
+														<span className="text-gray-700 font-semibold">{`Languages: `}</span>
+														<span className="flex flex-wrap gap-1">
+															{application.languages.map(
+																(lang: string, i: number) => (
+																	<span
+																		className="bg-white rounded-md border px-1"
+																		key={i}
+																	>
+																		{lang}
+																	</span>
+																)
+															)}
+														</span>
 													</dd>
 												</dl>
 												<div className="flex gap-3 mt-6">
@@ -250,7 +263,7 @@ function Creator() {
 															className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
 															onClick={() =>
 																router.push(
-																	`/chat/?active=${creator?.user_id || 0}`
+																	`/chat/?active=${application.userId}`
 																)
 															}
 														>
@@ -262,7 +275,7 @@ function Creator() {
 																fill="#444"
 																className="h-5 w-5 text-gray-400 hover:text-gray-50"
 															>
-																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+																<path d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z" />
 															</svg>
 															Chat
 														</p>
@@ -274,11 +287,12 @@ function Creator() {
 								)}
 							</>
 						) : (
-							<>{`Creator don't have any application`}</>
+							<>{`No application found`}</>
 						)}
 					</ul>
 				</div>
 			</div>
+			{loading && <Loading />}
 		</>
 	);
 }

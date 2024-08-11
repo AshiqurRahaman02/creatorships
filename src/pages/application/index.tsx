@@ -1,3 +1,4 @@
+import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
 import { getAllApplications } from "@/services/applicationService";
@@ -9,9 +10,9 @@ import React, { useEffect, useState } from "react";
 
 function Applications() {
 	const router = useRouter();
-	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
+	const [loading, setLoading] = useState(true)
 
 	const [allApplications, setAllApplications] = useState<
 		ApplicationAttributes[] | []
@@ -34,6 +35,8 @@ function Applications() {
 				setAllApplications(applications);
 				setFilteredApplications(applications);
 			}
+
+			setLoading(false)
 		};
 		const userDetails = localStorage.getItem("userInfo");
 		const token = localStorage.getItem("token");
@@ -47,10 +50,6 @@ function Applications() {
 			router.push("/login");
 		}
 	}, []);
-
-	const toggleSidebar = () => {
-		setSidebarOpen(!sidebarOpen);
-	};
 
 	const handleFilter = (
 		experience: string,
@@ -116,96 +115,78 @@ function Applications() {
 				<title>Applications</title>
 			</Head>
 			<Nav />
-			<div className="min-h-screen flex  bg-gray-100">
-				{/* Sidebar */}
-				<div
-					className={`flex flex-col w-56 min-h-screen bg-white rounded-r-3xl overflow-hidden transition-transform transform ${
-						sidebarOpen ? "translate-x-0" : "-translate-x-full"
-					} md:translate-x-0 md:relative  pr-6`}
-				>
-					<h1 className="text-2xl font-bold mb-4">Applications</h1>
-					<div className="mb-6">
-						<label className="block mb-2">
-							Experience:
-							<input
-								type="text"
-								className="block w-full p-2 border rounded"
-								onChange={(e) =>
-									handleFilter(e.target.value, "", false)
-								}
-							/>
-						</label>
-						<label className="block mb-2">
-							Language:
-							<input
-								type="text"
-								className="block w-full p-2 border rounded"
-								onChange={(e) =>
-									handleFilter("", e.target.value, false)
-								}
-							/>
-						</label>
-						<label className="block mb-4">
-							Verified:
-							<input
-								type="checkbox"
-								className="ml-2"
-								onChange={(e) => handleFilter("", "", e.target.checked)}
-							/>
-						</label>
-					</div>
-					<div className="mb-6 flex flex-col gap-2">
-						<button
-							className="px-4 py-2 bg-blue-500 text-white rounded"
-							onClick={() => handleSort("pricing")}
-						>
-							Sort by Pricing
-						</button>
-						<button
-							className="px-4 py-2 bg-blue-500 text-white rounded"
-							onClick={() => handleSort("endDate")}
-						>
-							Sort by End Date
-						</button>
-						<button
-							className="px-4 py-2 bg-blue-500 text-white rounded"
-							onClick={() => handleSort("no_of_openings")}
-						>
-							Sort by No of Openings
-						</button>
-					</div>
+			<div className="min-h-screen p-3">
+				<div className="flex">
+					<h1 className="font-bold text-5xl">All applications :</h1>
 				</div>
 
 				{/* Main content */}
-				<div className="flex-1 p-6 border">
-					<button
-						onClick={toggleSidebar}
-						className="block md:hidden text-indigo-500 focus:outline-none"
+				<div className="flex-1 p-x-2 ">
+					<div
+						className={`flex flex-wrap bg-gray-100 rounded-lg overflow-hidden transition-transform transform   p-x-1  gap-3  items-center justify-around my-5`}
 					>
-						<svg
-							className="w-6 h-6"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M4 6h16M4 12h16m-7 6h7"
-							></path>
-						</svg>
-					</button>
+						<>
+							<label className="block mb-2">
+								Experience:
+								<input
+									type="text"
+									className="block w-full p-2 border rounded"
+									onChange={(e) =>
+										handleFilter(e.target.value, "", false)
+									}
+								/>
+							</label>
+							<label className="block mb-2">
+								Language:
+								<input
+									type="text"
+									className="block w-full p-2 border rounded"
+									onChange={(e) =>
+										handleFilter("", e.target.value, false)
+									}
+								/>
+							</label>
+							<label className="block mb-4">
+								Verified:
+								<input
+									type="checkbox"
+									className="ml-2"
+									onChange={(e) =>
+										handleFilter("", "", e.target.checked)
+									}
+								/>
+							</label>
+							<button
+								className="px-4 py-2 bg-blue-500 text-white rounded"
+								onClick={() => handleSort("pricing")}
+							>
+								Sort by Pricing
+							</button>
+							<button
+								className="px-4 py-2 bg-blue-500 text-white rounded"
+								onClick={() => handleSort("endDate")}
+							>
+								Sort by End Date
+							</button>
+							<button
+								className="px-4 py-2 bg-blue-500 text-white rounded"
+								onClick={() => handleSort("no_of_openings")}
+							>
+								Sort by No of Openings
+							</button>
+						</>
+					</div>
 					{/* Main content goes here */}
 
-					<div className="flex flex-col gap-5 p-6 border">
-						<div className="flex">
-							<h1 className="font-bold text-5xl">All applications :</h1>
-						</div>
+					<div className="flex flex-col gap-5 p-1">
 						<ul
 							role="list"
-							className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+							className="gap-3"
+							style={{
+								display: "grid",
+								gridTemplateColumns:
+									"repeat(auto-fit, minmax(300px, 1fr))",
+							}}
 						>
 							{filteredApplications.length > 0 ? (
 								<>
@@ -215,8 +196,9 @@ function Applications() {
 											index: number
 										) => (
 											<li
-												className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-200 shadow"
+												className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-100 shadow"
 												key={index}
+												style={{ maxWidth: "400px" }}
 											>
 												<div className="flex flex-1 flex-col p-8">
 													<dl className="mt-1 flex flex-grow flex-col gap-3 justify-between">
@@ -296,12 +278,14 @@ function Applications() {
 																Details
 															</p>
 															<hr className="h-full w-0.5 bg-gray-500" />
-															<p className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
-														onClick={() =>
-															router.push(
-																`/chat/?active=${application.userId}`
-															)
-														}>
+															<p
+																className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
+																onClick={() =>
+																	router.push(
+																		`/chat/?active=${application.userId}`
+																	)
+																}
+															>
 																<svg
 																	xmlns="http://www.w3.org/2000/svg"
 																	height="24px"
@@ -314,7 +298,6 @@ function Applications() {
 																</svg>
 																Chat
 															</p>
-															
 														</div>
 													</div>
 												</div>
@@ -329,6 +312,7 @@ function Applications() {
 					</div>
 				</div>
 			</div>
+			{loading && <Loading />}
 		</>
 	);
 }
