@@ -1,3 +1,4 @@
+import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
 import {
@@ -20,6 +21,7 @@ function Application() {
 	const { id } = router.query;
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
+	const [loading, setLoading] = useState(true)
 
 	const [application, setApplication] = useState<ApplicationAttributes>({
 		id: 0,
@@ -68,6 +70,8 @@ function Application() {
 			setApplication(application);
 			setDetails(details);
 		}
+
+		setLoading(false)
 	};
 
 	return (
@@ -190,6 +194,7 @@ function Application() {
 					</div>
 				</div>
 			</div>
+			{loading && <Loading />}
 		</>
 	);
 }
