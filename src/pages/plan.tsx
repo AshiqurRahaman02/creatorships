@@ -318,7 +318,7 @@ const ProductDisplay = ({
 							}}
 							className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 						>
-							Get access
+							Subscribe
 						</button>
 						<p className="mt-6 text-xs leading-5 text-gray-600">
 							Invoices and receipts available for easy company
@@ -385,7 +385,7 @@ const SuccessDisplay = ({ sessionId, planType, token }: any) => {
 		localStorage.setItem("userInfo", JSON.stringify(user));
 
 		setTimeout(() => {
-			router.push("/");
+			router.push("/account?active=portfolio");
 		}, 1000);
 	};
 	return (
@@ -434,7 +434,7 @@ const SuccessDisplay = ({ sessionId, planType, token }: any) => {
 								)
 							}}
 						>
-							Get started
+							Setup account
 						</button>
 						<button
 							className="track w-full py-2 px-4 border border-gray-300 text-gray-800 font-medium rounded-md shadow-sm"
