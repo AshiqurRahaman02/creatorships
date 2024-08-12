@@ -51,7 +51,7 @@ const Account = () => {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true);
 
 	const [activeSession, setActiveSession] = useState("");
 
@@ -62,16 +62,11 @@ const Account = () => {
 			const parsedUserDetails = JSON.parse(userDetails);
 			setToken(token);
 			setUserDetails(parsedUserDetails);
+			setLoading(false);
 		} else {
 			router.push("/login");
 		}
-	}, [router]);
 
-	const toggleSidebar = () => {
-		setSidebarOpen(!sidebarOpen);
-	};
-
-	useEffect(() => {
 		const query = new URLSearchParams(window.location.search);
 		let active = query.get("active");
 
@@ -86,6 +81,10 @@ const Account = () => {
 
 		setActiveSession(active || "profile");
 	}, [router]);
+
+	const toggleSidebar = () => {
+		setSidebarOpen(!sidebarOpen);
+	};
 
 	return (
 		<>
@@ -153,22 +152,26 @@ const Account = () => {
 								<BusinessPortfolioComponent
 									userDetails={userDetails}
 									token={token}
+									setLoading={setLoading}
 								/>
 							) : (
 								<CreatorPortfolioComponent
 									userDetails={userDetails}
 									token={token}
+									setLoading={setLoading}
 								/>
 							)
 						) : activeSession === "applications" ? (
 							<ApplicationComponent
 								userDetails={userDetails}
 								token={token}
+								setLoading={setLoading}
 							/>
 						) : (
 							<ProfileComponent
 								userDetails={userDetails}
 								token={token}
+								setLoading={setLoading}
 							/>
 						)}
 					</div>
@@ -182,7 +185,7 @@ const Account = () => {
 
 export default Account;
 
-const ProfileComponent = ({ userDetails, token }: any) => {
+const ProfileComponent = ({ userDetails, token, setLoading }: any) => {
 	const [setUp, setSetup] = useState(false);
 
 	const [updatedLogo, setUpdatedLogo] = useState("");
@@ -204,6 +207,7 @@ const ProfileComponent = ({ userDetails, token }: any) => {
 		if (!image) {
 			return;
 		}
+		setLoading(true);
 
 		const data = new FormData();
 		data.append("image", image);
@@ -222,12 +226,14 @@ const ProfileComponent = ({ userDetails, token }: any) => {
 		} else {
 			setUpdatedLogo(imageResult?.url || "");
 			setImageUploaded(true);
-			notify(`${message}, You can update you logo`, "success");
+			notify(`${message}, You can update your logo`, "success");
 		}
+		setLoading(false);
 	};
 
 	const updateLogo = async () => {
 		try {
+			setLoading(true);
 			const res = await updateUserLogo(token, updatedLogo);
 			if (res.isError) {
 				notify(res.message, "warning");
@@ -238,8 +244,10 @@ const ProfileComponent = ({ userDetails, token }: any) => {
 					window.location.reload();
 				}, 3000);
 			}
+			setLoading(false);
 		} catch (error: any) {
 			notify(error.message, "error");
+			setLoading(false);
 		}
 	};
 
@@ -465,7 +473,11 @@ const ProfileComponent = ({ userDetails, token }: any) => {
 	);
 };
 
-const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
+const BusinessPortfolioComponent = ({
+	userDetails,
+	token,
+	setLoading,
+}: any) => {
 	const [businessDetails, setBusinessDetails] =
 		useState<BusinessInfoAttributes | null>(null);
 
@@ -503,11 +515,13 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 				});
 				setBusinessDetails(business);
 			}
+			setLoading(false);
 		};
 		if (!businessDetails) {
+			setLoading(true);
 			getBusinessDetails();
 		}
-	}, [businessDetails, userDetails]);
+	}, [businessDetails, setLoading, userDetails]);
 
 	const handleInputChange = (index: number, field: string, value: string) => {
 		const updatedSocials = formData.social.map((social, i) =>
@@ -535,6 +549,7 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 			notify("Please enter all information", "warning");
 			return;
 		}
+		setLoading(true);
 		let body = { ...formData };
 		let { isError, message, business }: any = await updateBusiness(
 			body,
@@ -548,6 +563,7 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 			setBusinessDetails(business);
 			setSetup(false);
 		}
+		setLoading(false);
 	};
 
 	const handleCreateSetup = async () => {
@@ -562,6 +578,8 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 			notify("Please enter all information", "warning");
 			return;
 		}
+
+		setLoading(true);
 		let body = { ...formData };
 		let { isError, message, business }: any = await createBusiness(
 			body,
@@ -575,6 +593,7 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 			setBusinessDetails(business);
 			setSetup(false);
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -786,7 +805,7 @@ const BusinessPortfolioComponent = ({ userDetails, token }: any) => {
 	);
 };
 
-const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
+const CreatorPortfolioComponent = ({ userDetails, token, setLoading }: any) => {
 	const [creatorDetails, setCreatorDetails] =
 		useState<CreatorInfoAttributes | null>(null);
 
@@ -824,8 +843,10 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 				});
 				setCreatorDetails(creator);
 			}
+			setLoading(false);
 		};
 		if (!creatorDetails) {
+			setLoading(true);
 			getCreatorDetails();
 		}
 	}, [creatorDetails, userDetails]);
@@ -860,10 +881,11 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			formData.languages.length <= 0 ||
 			!formData.website
 		) {
-			console.log(formData)
+			console.log(formData);
 			notify("Please enter all information", "warning");
 			return;
 		}
+		setLoading(true);
 		let body = { ...formData };
 		let { isError, message, creator }: any = await updateCreator(body, token);
 
@@ -874,6 +896,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			setCreatorDetails(creator);
 			setSetup(false);
 		}
+		setLoading(false);
 	};
 
 	const handleCreateSetup = async () => {
@@ -888,6 +911,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			notify("Please enter all information", "warning");
 			return;
 		}
+		setLoading(true);
 		let body = { ...formData };
 		let { isError, message, creator }: any = await createCreator(body, token);
 
@@ -898,6 +922,7 @@ const CreatorPortfolioComponent = ({ userDetails, token }: any) => {
 			setCreatorDetails(creator);
 			setSetup(false);
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -1127,7 +1152,7 @@ const initialFormDetails = {
 	no_of_openings: 1,
 };
 
-const ApplicationComponent = ({ userDetails, token }: any) => {
+const ApplicationComponent = ({ userDetails, token, setLoading }: any) => {
 	const router = useRouter();
 	const [applications, setApplications] = useState<
 		ApplicationAttributes[] | []
@@ -1148,16 +1173,17 @@ const ApplicationComponent = ({ userDetails, token }: any) => {
 	}, [token]);
 
 	const getApplicatioins = async () => {
+		setLoading(true)
 		let { isError, message, applications }: any = await getUserApplications(
 			token
 		);
 
-		console.log(isError, message, applications);
 		if (isError) {
 			notify(message, "warning");
 		} else {
 			setApplications([...applications]);
 		}
+		setLoading(false)
 	};
 
 	const addLanguage = () => {
@@ -1182,6 +1208,7 @@ const ApplicationComponent = ({ userDetails, token }: any) => {
 			notify("Please enter all information", "warning");
 			return;
 		}
+		setLoading(true)
 		let body = { ...formDetails };
 		let { isError, message, application }: any = await createApplication(
 			body,
@@ -1196,6 +1223,7 @@ const ApplicationComponent = ({ userDetails, token }: any) => {
 			setFormDetails(initialFormDetails);
 			setApplications([application, ...applications]);
 		}
+		setLoading(false)
 	};
 
 	const handleUpdateApplication = async () => {
@@ -1217,6 +1245,7 @@ const ApplicationComponent = ({ userDetails, token }: any) => {
 			notify("Application not found", "warning");
 			return;
 		}
+		setLoading(true)
 		let body = { ...formDetails };
 		let { isError, message, application }: any = await updateApplication(
 			body,
@@ -1232,6 +1261,7 @@ const ApplicationComponent = ({ userDetails, token }: any) => {
 			setFormDetails(initialFormDetails);
 			setApplications([application, ...applications]);
 		}
+		setLoading(false)
 	};
 
 	return (
@@ -1420,121 +1450,135 @@ const ApplicationComponent = ({ userDetails, token }: any) => {
 						</button>
 					</div>
 					<ul
-						role="list"
-						className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-					>
-						{applications.length > 0 ? (
-							<>
-								{applications.map(
-									(
-										application: ApplicationAttributes,
-										index: number
-									) => (
-										<li
-											className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-200 shadow"
-											key={index}
-										>
-											<div className="flex flex-1 flex-col p-8">
-												<dl className="mt-1 flex flex-grow flex-col gap-3 justify-between">
-													<dt className="sr-only">Title</dt>
-													<dd className="text-3xl text-black font-semibold">
-														{application.heading}
-													</dd>
-													<dt className="sr-only">Price</dt>
-													<dd className="text-sm text-gray-500">
-														<span className="text-gray-700 font-semibold">{`Price: `}</span>
-														{application.pricing}
-													</dd>
-													<dt className="sr-only">Expire date</dt>
-													<dd className="text-sm text-gray-500">
-														<span className="text-gray-700 font-semibold">{`Expire date: `}</span>
+							role="list"
+							className="gap-3"
+							style={{
+								display: "grid",
+								gridTemplateColumns:
+									"repeat(auto-fit, minmax(300px, 1fr))",
+							}}
+						>
+							{applications.length > 0 ? (
+								<>
+									{applications.map(
+										(
+											application: ApplicationAttributes,
+											index: number
+										) => (
+											<li
+												className="col-span-1 flex flex-col divide-y divide-gray-700 rounded-lg bg-gray-100 shadow"
+												key={index}
+												style={{ maxWidth: "400px" }}
+											>
+												<div className="flex flex-1 flex-col p-8">
+													<dl className="mt-1 flex flex-grow flex-col gap-3 justify-between">
+														<dt className="sr-only">Title</dt>
+														<dd className="text-3xl text-black font-semibold">
+															{application.heading}
+														</dd>
+														<dt className="sr-only">Price</dt>
+														<dd className="text-sm text-gray-500">
+															<span className="text-gray-700 font-semibold">{`Price: `}</span>
+															{application.pricing}
+														</dd>
+														<dt className="sr-only">
+															Expire date
+														</dt>
+														<dd className="text-sm text-gray-500">
+															<span className="text-gray-700 font-semibold">{`Expire date: `}</span>
 
-														{application.endDate}
-													</dd>
+															{application.endDate}
+														</dd>
 
-													<dt className="sr-only">Languages</dt>
-													<dd className="text-sm text-gray-500 flex gap-2">
-														{application.languages.map((lang: string,i:number) =>(
-															<span className="bg-white rounded-md border px-1" key={i}>{lang}</span>
-														))}
-													</dd>
-												</dl>
-												<div className="flex gap-3 mt-6">
-													<Image
-														src={userDetails.logo}
-														alt="user logo"
-														width={80}
-														height={80}
-														className="h-16 w-16 flex-shrink-0 rounded-full border-black p-1"
-														priority
-													/>
-													<h3 className="mt-3 text-xl font-medium text-gray-900">
-														{userDetails.name}
-													</h3>
-												</div>
-											</div>
-											<div>
-												<div className="-mt-px flex divide-x divide-gray-200 ">
-													<div className="-ml-px flex w-0 flex-1">
-														<p className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"  onClick={()=>router.push(`/application/${application.id}`)}>
-															<svg
-																xmlns="http://www.w3.org/2000/svg"
-																height="24px"
-																viewBox="0 -960 960 960"
-																width="24px"
-																fill="#444"
-																className="h-5 w-5 text-gray-400 hover:text-gray-50"
-															>
-																<path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
-															</svg>
-															Preview
-														</p>
-														<hr className="h-full w-0.5 bg-gray-500" />
-														<p
-															className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
-															onClick={() => {
-																setSetup(true);
-																setFormDetails({
-																	id: application.id,
-																	heading: application.heading,
-																	about: application.about,
-																	pricing: application.pricing,
-																	endDate: application.endDate,
-																	experience:
-																		application.experience,
-																	languages: [
-																		...application.languages,
-																	],
-																	benefits:
-																		application.benefits,
-																	no_of_openings:
-																		application.no_of_openings,
-																});
-															}}
-														>
-															<svg
-																xmlns="http://www.w3.org/2000/svg"
-																height="24px"
-																viewBox="0 -960 960 960"
-																width="24px"
-																fill="#444"
-																className="h-5 w-5 text-gray-400 hover:text-gray-50"
-															>
-																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-															</svg>
-															Update
-														</p>
+														<dt className="sr-only">Languages</dt>
+														<dd className="text-sm text-gray-500 flex gap-2">
+															<span className="text-gray-700 font-semibold">{`Languages: `}</span>
+															<span className="flex flex-wrap gap-1">
+																{application.languages.map(
+																	(
+																		lang: string,
+																		i: number
+																	) => (
+																		<span
+																			className="bg-white rounded-md border px-1"
+																			key={i}
+																		>
+																			{lang}
+																		</span>
+																	)
+																)}
+															</span>
+														</dd>
+													</dl>
+													<div className="flex gap-3 mt-6">
+														<Image
+															src={userDetails.logo}
+															alt="user logo"
+															width={80}
+															height={80}
+															className="h-16 w-16 flex-shrink-0 rounded-full border-black p-1"
+															priority
+														/>
+														<h3 className="mt-3 text-xl font-medium text-gray-900">
+															{userDetails.name}
+														</h3>
 													</div>
 												</div>
-											</div>
-										</li>
-									)
-								)}
-							</>
-						) : (
-							<>{`You don't have any application`}</>
-						)}
-					</ul>
+												<div>
+													<div className="-mt-px flex divide-x divide-gray-200 ">
+														<div className="-ml-px flex w-0 flex-1">
+															<p
+																className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
+																onClick={() =>
+																	router.push(
+																		`/application/${application.id}`
+																	)
+																}
+															>
+																<svg
+																	xmlns="http://www.w3.org/2000/svg"
+																	height="24px"
+																	viewBox="0 -960 960 960"
+																	width="24px"
+																	fill="#444"
+																	className="h-5 w-5 text-gray-400 hover:text-gray-50"
+																>
+																	<path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+																</svg>
+																Details
+															</p>
+															<hr className="h-full w-0.5 bg-gray-500" />
+															<p
+																className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 cursor-pointer"
+																onClick={() =>
+																	router.push(
+																		`/chat/?active=${application.userId}`
+																	)
+																}
+															>
+																<svg
+																	xmlns="http://www.w3.org/2000/svg"
+																	height="24px"
+																	viewBox="0 -960 960 960"
+																	width="24px"
+																	fill="#444"
+																	className="h-5 w-5 text-gray-400 hover:text-gray-50"
+																>
+																	<path d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z" />
+																</svg>
+																Chat
+															</p>
+														</div>
+													</div>
+												</div>
+											</li>
+										)
+									)}
+								</>
+							) : (
+								<>{`No application found`}</>
+							)}
+						</ul>
 				</div>
 			)}
 		</div>
