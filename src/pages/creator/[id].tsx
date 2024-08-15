@@ -1,6 +1,7 @@
 import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
+import Verified from "@/components/element/Verified";
 import {
 	getAllApplications,
 	getApplication,
@@ -19,10 +20,9 @@ import React, { useEffect, useState } from "react";
 
 function Creator() {
 	const router = useRouter();
-	const { id } = router.query;
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true);
 
 	const [creator, setCreator] = useState<CreatorInfoAttributes | null>(null);
 	const [applications, setApplications] = useState<ApplicationAttributes[]>([
@@ -46,6 +46,26 @@ function Creator() {
 		},
 	]);
 
+	const getCreatorDetails = async (id:string) => {
+		if (!id) {
+			router.push("/creator");
+			return;
+		}
+		let { isError, message, creator, applications }: any = await getCreator(
+			+id || 0
+		);
+
+		if (isError) {
+			notify(message, "warning");
+		} else {
+			console.log(creator);
+			setApplications(applications);
+			setCreator(creator);
+		}
+
+		setLoading(false);
+	};
+
 	useEffect(() => {
 		const userDetails = localStorage.getItem("userInfo");
 		const token = localStorage.getItem("token");
@@ -53,38 +73,20 @@ function Creator() {
 			const parsedUserDetails = JSON.parse(userDetails);
 			setToken(token);
 			setUserDetails(parsedUserDetails);
+
+			if (router.isReady) {
+				let id = router.query.id as string;
+				getCreatorDetails(id);
+			}
 		} else {
 			router.push("/login");
 		}
-	}, [id, router]);
-	useEffect(() => {
-		const getCreatorDetails = async () => {
-			if (!id) {
-				router.push("/creator");
-				return;
-			}
-			let { isError, message, creator, applications }: any =
-				await getCreator(+id || 0);
-
-			if (isError) {
-				notify(message, "warning");
-			} else {
-				console.log(creator);
-				setApplications(applications);
-				setCreator(creator);
-			}
-
-			setLoading(false)
-		};
-		if (!creator) {
-			getCreatorDetails();
-		}
-	}, [creator, userDetails]);
+	}, [router]);
 
 	return (
 		<>
 			<Head>
-				<title>Creator</title>
+				<title>{creator?.user.name || "Creator"}</title>
 			</Head>
 			<Nav />
 			<div className="min-w-80 max-w-3xl flex  bg-gray-100 m-auto">
@@ -104,7 +106,10 @@ function Creator() {
 								priority
 							/>
 							<h3 className="mt-3 text-xl font-medium text-gray-900 flex gap-2">
-								<span>{creator?.user.name}</span>
+								<span>
+									{creator?.user.name}{" "}
+									{creator?.user.verified && <Verified />}
+								</span>
 								<span
 									onClick={() =>
 										window.open(creator?.website, "_blank")

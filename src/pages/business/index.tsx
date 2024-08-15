@@ -1,7 +1,11 @@
 import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
-import { getAllBusiness } from "@/services/busineesService";
+import Verified from "@/components/element/Verified";
+import {
+	getAllBusinesses,
+	getSearchedBusinesses,
+} from "@/services/busineesService";
 import { BusinessInfoAttributes, UserDetails } from "@/utils/interface";
 import Head from "next/head";
 import Image from "next/image";
@@ -12,7 +16,7 @@ function Business() {
 	const router = useRouter();
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true);
 
 	const [businesses, setBusinesses] = useState<BusinessInfoAttributes[] | []>(
 		[]
@@ -21,19 +25,35 @@ function Business() {
 		BusinessInfoAttributes[] | []
 	>([]);
 
+	const getAllBusinessesDetails = async () => {
+		let { isError, message, businesses }: any = await getAllBusinesses();
+
+		if (isError) {
+			notify(message, "warning");
+		} else {
+			setBusinesses(businesses);
+			setFilteredBusinesses(businesses);
+		}
+
+		setLoading(false);
+	};
+
+	const getSearched = async (query: string) => {
+		let { isError, message, businesses }: any = await getSearchedBusinesses(
+			query
+		);
+
+		if (isError) {
+			notify(message, "warning");
+		} else {
+			setBusinesses(businesses);
+			setFilteredBusinesses(businesses);
+		}
+
+		setLoading(false);
+	};
+
 	useEffect(() => {
-		const getAllBusinessesDetails = async () => {
-			let { isError, message, businesses }: any = await getAllBusiness();
-
-			if (isError) {
-				notify(message, "warning");
-			} else {
-				setBusinesses(businesses);
-				setFilteredBusinesses(businesses);
-			}
-
-			setLoading(false)
-		};
 		const userDetails = localStorage.getItem("userInfo");
 		const token = localStorage.getItem("token");
 		if (userDetails && token) {
@@ -41,7 +61,16 @@ function Business() {
 			console.log(token);
 			setToken(token);
 			setUserDetails(parsedUserDetails);
-			getAllBusinessesDetails();
+
+			if (router.isReady) {
+				let searchValue = router.query.searchValue as string;
+
+				if (searchValue) {
+					getSearched(searchValue);
+				} else {
+					getAllBusinessesDetails();
+				}
+			}
 		} else {
 			router.push("/login");
 		}
@@ -190,8 +219,11 @@ function Business() {
 														className="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
 														priority
 													/>
-													<h3 className="mt-6 font-semibold text-xl text-gray-900">
-														{business?.user?.name}
+													<h3 className="mt-6 font-semibold text-xl text-gray-900 flex items-center gap-2">
+														<span>{business?.user?.name}</span>{" "}
+														{business?.user.verified && (
+															<Verified />
+														)}
 													</h3>
 													<dl className="mt-1 flex flex-grow flex-col justify-between">
 														<dt className="sr-only">About</dt>

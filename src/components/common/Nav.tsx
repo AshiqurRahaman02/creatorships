@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Search from "../element/Search";
 
 function Nav() {
-	const [scrolling, setScrolling] = useState(false);
 	const [userDetails, setUserDetails] = useState<any | null>(null);
 
 	const router = useRouter();
+
+	const [isVisible, setIsVisible] = useState(true);
+	const [lastScrollY, setLastScrollY] = useState(0);
 
 	useEffect(() => {
 		const userDetails = localStorage.getItem("userInfo");
@@ -14,35 +17,34 @@ function Nav() {
 			const parsedUserDetails = JSON.parse(userDetails);
 			setUserDetails(parsedUserDetails);
 		}
-
 		const handleScroll = () => {
-			if (window.scrollY > 5) {
-				setScrolling(true);
+			const currentScrollY = window.scrollY;
+			if (currentScrollY > lastScrollY) {
+				// Scrolling down
+				setIsVisible(false);
 			} else {
-				setScrolling(false);
+				// Scrolling up
+				setIsVisible(true);
 			}
+			setLastScrollY(currentScrollY);
 		};
 
 		window.addEventListener("scroll", handleScroll);
-	}, []);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [lastScrollY]);
+
 	return (
 		<div
-			className={`sticky top-0 w-full flex justify-between items-center px-1 z-20 ${
-				scrolling
-					? "backdrop-blur-sm shadow-sm"
-					: "backdrop-blur-0  shadow-none"
+			className={`sticky w-full flex justify-between items-center px-1 z-20 transform transition-transform duration-300 ease-in-out ${
+				isVisible
+					? "top-0 translate-y-0 backdrop-blur-sm shadow-sm"
+					: "-top-20 -translate-y-full backdrop-blur-0 shadow-none"
 			} bg-white`}
-			// style={{
-			// 	maxWidth: "100vw",
-			// 	padding: "0px 4vw",
-			// 	height: "70px",
-			// 	position: "sticky",
-			// 	top: 0,
-			// 	backgroundColor: scrolling ? "black" : "transparent",
-			// 	filter:
-			// }}
 		>
-			<div className="flex justify-between items-center cursor-pointer" onClick={()=>router.push("/")}>
+			<div
+				className="flex justify-between items-center cursor-pointer"
+				onClick={() => router.push("/")}
+			>
 				<Image
 					src="/assets/creatorships-logo.png"
 					alt="creatorships-logo"
@@ -56,8 +58,12 @@ function Nav() {
 					CREATORSHIP
 				</h1>
 			</div>
+			<Search />
 			<div className="flex justify-between items-center gap-5">
-				<div onClick={() => router.push("/chat")}>
+				<div
+					onClick={() => router.push("/chat")}
+					className="cursor-pointer"
+				>
 					<Image
 						src="/icon/chat.svg"
 						alt="chat-svg"

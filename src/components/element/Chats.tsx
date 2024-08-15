@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import FormInput from "./FormInput";
 import { sendChat } from "@/services/chatService";
 import notify from "../common/Notify";
+import Verified from "./Verified";
 
 interface ChatProps {
 	active: ChatAttributes | null;
@@ -63,21 +64,53 @@ export const Chats: React.FC<ChatProps> = ({
 			setActive(active);
 			setMessage("");
 
-			setTimeout(()=>{
-				scrollToBottom()
-			},100)
+			setTimeout(() => {
+				scrollToBottom();
+			}, 100);
 		}
 	};
 
+	function timeConverter(inputDate: any) {
+		const currentDate: any = new Date();
+		const inputDateTime: any = new Date(inputDate);
+		const timeDifferenceInSeconds = Math.floor(
+			(currentDate - inputDateTime) / 1000
+		);
+
+		const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
+		if (timeDifferenceInSeconds < 60) {
+			return rtf.format(-timeDifferenceInSeconds, "second");
+		} else if (timeDifferenceInSeconds < 3600) {
+			const minutes = Math.floor(timeDifferenceInSeconds / 60);
+			return rtf.format(-minutes, "minute");
+		} else if (timeDifferenceInSeconds < 86400) {
+			const hours = Math.floor(timeDifferenceInSeconds / 3600);
+			return rtf.format(-hours, "hour");
+		} else {
+			const options = {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+				hour: "2-digit",
+				minute: "2-digit",
+			};
+			return inputDateTime.toLocaleDateString("en-US", options);
+		}
+	}
+
 	return (
-		<div>
+		<div
+			style={{ maxWidth: "950px", margin: "auto" }}
+			className="border md:ml-64 "
+		>
 			{newUser || active ? (
 				<>
 					<div className="flex items-center justify-between p-3 bg-white">
 						{newUser ? (
 							<>
 								<div className="flex items-center gap-3">
-									<button>
+									<button onClick={() => setActive(null)}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											height="24px"
@@ -97,7 +130,7 @@ export const Chats: React.FC<ChatProps> = ({
 										priority
 									/>
 									<h1 className="text-lg font-semibold">
-										{newUser.name}
+										{newUser.name} {newUser.verified && <Verified />}
 									</h1>
 								</div>
 								<div>
@@ -117,7 +150,7 @@ export const Chats: React.FC<ChatProps> = ({
 								{active?.sender.user_id === userDetails?.user_id ? (
 									<>
 										<div className="flex items-center gap-3">
-											<button>
+											<button onClick={() => setActive(null)}>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
 													height="24px"
@@ -136,7 +169,12 @@ export const Chats: React.FC<ChatProps> = ({
 												className="p-1 border rounded-full"
 												priority
 											/>
-											<h1>{active?.receiver?.name}</h1>
+											<h1 className="flex gap-1 items-center">
+												{active?.receiver?.name}{" "}
+												{active?.receiver.verified && (
+													<Verified full={false} />
+												)}{" "}
+											</h1>
 										</div>
 										<div>
 											<svg
@@ -172,7 +210,12 @@ export const Chats: React.FC<ChatProps> = ({
 												className="p-1 border rounded-full"
 												priority
 											/>
-											<h1>{active?.sender?.name}</h1>
+											<h1 className="flex gap-1 items-center">
+												{active?.sender?.name}{" "}
+												{active?.sender.verified && (
+													<Verified full={false} />
+												)}{" "}
+											</h1>
 										</div>
 										<div>
 											<svg
@@ -193,11 +236,10 @@ export const Chats: React.FC<ChatProps> = ({
 					<div
 						ref={allChatsRef}
 						style={{
-							height: "400px",
-							maxHeight: "400px",
+							maxHeight: "70vh",
 							overflowY: "auto",
 						}}
-						className="border py-5 px-3"
+						className="border py-5 px-3 bg-white"
 					>
 						<p className=" bg-gray-300 w-max px-3 py-1 m-auto rounded-lg text-center">
 							<span>
@@ -213,22 +255,30 @@ export const Chats: React.FC<ChatProps> = ({
 						{active?.chats.map((chat: any, index: number) => (
 							<>
 								{chat.sender_id === userDetails?.user_id ? (
-									<p className="ml-auto rounded-lg  bg-gray-200 px-3 py-1 rounded-r-lg max-w-80 mt-5">
-										<span>
-											{chat.message}
+									<p className="ml-auto rounded-lg  bg-gray-200 px-3 py-1 rounded-r-lg max-w-80 w-max mt-5 text-right">
+										<p>{chat.message}</p>
+										<span style={{ fontSize: "10px" }}>
+											{timeConverter(chat.date)}
 										</span>
 									</p>
 								) : (
-									<p className="mr-auto rounded-lg  bg-gray-200 px-3 py-1 rounded-r-lg max-w-80 mt-5">
-										<span>
-										{chat.message}
+									<p className="mr-auto rounded-lg  bg-gray-200 px-3 py-1 rounded-r-lg max-w-80 w-max mt-5">
+										{/* <span style={{ fontSize: "13px" }}>
+											{active?.sender.user_id ===
+											userDetails?.user_id
+												? active.receiver?.name
+												: active.sender?.name}
+										</span> */}
+										<p>{chat.message}</p>
+										<span style={{ fontSize: "10px" }}>
+											{timeConverter(chat.date)}
 										</span>
 									</p>
 								)}
 							</>
 						))}
 					</div>
-					<div>
+					<div className="bg-white">
 						<div className="inputForm flex items-center gap-5">
 							<button className="-mt-1 relative left-3">
 								<svg
@@ -243,14 +293,16 @@ export const Chats: React.FC<ChatProps> = ({
 							</button>
 							<input
 								type="text"
-								className="input pl-1"
+								className="input pl-2"
 								placeholder={`Type a message...`}
 								value={message}
 								onChange={(e) => setMessage(e.target.value)}
+								style={{ outline: "1px solid black" }}
 							/>
 							<button
 								onClick={handelSendChat}
 								className="-rotate-45 -mt-2"
+								title="Send a message"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
