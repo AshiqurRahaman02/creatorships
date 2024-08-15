@@ -7,8 +7,8 @@ export const applicationRoutes = {
 
 	getUserApplications: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/application/get-user-applications`,
 	getApplication: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/application/get-application`,
-	getAllApplications: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/application/get-all-application`,
-	searchApplications: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/application/search-application`,
+	getAllApplications: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/application/get-all-applications`,
+	searchApplications: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/application/search-applications`,
 };
 
 export const createApplication = async (body: any, token: string) => {
@@ -64,5 +64,10 @@ export const getUserApplications = async (token: string) => {
 
 export const getAllApplications = async () => {
 	const response = await fetch(`${applicationRoutes.getAllApplications}`);
+	return response.json();
+};
+
+export const getSearchedApplications = async (query: string) => {
+	const response = await fetch(`${applicationRoutes.searchApplications}?query=${query}`);
 	return response.json();
 };

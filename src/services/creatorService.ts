@@ -45,7 +45,12 @@ export const getCreator = async (user_id: number) => {
 };
 
 
-export const getAllCreator = async () => {
+export const getAllCreators = async () => {
 	const response = await fetch(`${creatorRoutes.getAllCreators}`);
+	return response.json();
+};
+
+export const getSearchedCreators = async (query: string) => {
+	const response = await fetch(`${creatorRoutes.searchCreators}?query=${query}`);
 	return response.json();
 };

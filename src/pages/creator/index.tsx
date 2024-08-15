@@ -1,7 +1,8 @@
 import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
-import { getAllCreator } from "@/services/creatorService";
+import Verified from "@/components/element/Verified";
+import { getAllCreators, getSearchedCreators } from "@/services/creatorService";
 import { CreatorInfoAttributes, UserDetails } from "@/utils/interface";
 import Head from "next/head";
 import Image from "next/image";
@@ -19,9 +20,8 @@ function Creator() {
 		CreatorInfoAttributes[] | []
 	>([]);
 
-	useEffect(() => {
 		const getAllCreatorDetails = async () => {
-			let { isError, message, creators }: any = await getAllCreator();
+			let { isError, message, creators }: any = await getAllCreators();
 
 			if (isError) {
 				notify(message, "warning");
@@ -32,14 +32,38 @@ function Creator() {
 
 			setLoading(false)
 		};
+
+		const getSearched = async (query: string) => {
+			let { isError, message, creators }: any = await getSearchedCreators(
+				query
+			);
+	
+			if (isError) {
+				notify(message, "warning");
+			} else {
+				setCreators(creators);
+				setFilteredCreators(creators);
+			}
+	
+			setLoading(false);
+		};
+	useEffect(() => {
 		const userDetails = localStorage.getItem("userInfo");
 		const token = localStorage.getItem("token");
 		if (userDetails && token) {
 			const parsedUserDetails = JSON.parse(userDetails);
-			console.log(token);
 			setToken(token);
 			setUserDetails(parsedUserDetails);
-			getAllCreatorDetails();
+
+			if (router.isReady) {
+				let searchValue = router.query.searchValue as string;
+
+				if (searchValue) {
+					getSearched(searchValue);
+				} else {
+					getAllCreatorDetails();
+				}
+			}
 		} else {
 			router.push("/login");
 		}
@@ -197,8 +221,8 @@ function Creator() {
 														className="mx-auto h-32 w-32 flex-shrink-0 rounded-full border-black p-1"
 														priority
 													/>
-													<h3 className="mt-6 font-semibold text-xl text-gray-900">
-														{creator?.user?.name}
+													<h3 className="mt-6 font-semibold text-xl text-gray-900 flex items-center gap-2">
+														<span>{creator?.user?.name}</span> { creator?.user.verified && <Verified/>}
 													</h3>
 													<dl className="mt-1 flex flex-grow flex-col justify-between">
 														<dt className="sr-only">Bio</dt>

@@ -1,3 +1,5 @@
+
+
 export const businessRoutes = {
 	createBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/create`,
 	updateBusiness: `${process.env.NEXT_PUBLIC_BACKEND_APP_BASE_URL}/business/update`,
@@ -44,7 +46,12 @@ export const getBusiness = async (user_id: number) => {
 	return response.json();
 };
 
-export const getAllBusiness = async () => {
+export const getAllBusinesses = async () => {
 	const response = await fetch(`${businessRoutes.getAllBusiness}`);
+	return response.json();
+};
+
+export const getSearchedBusinesses = async (query: string) => {
+	const response = await fetch(`${businessRoutes.searchBusiness}?query=${query}`);
 	return response.json();
 };

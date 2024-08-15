@@ -1,7 +1,11 @@
 import Loading from "@/components/common/Loading";
 import Nav from "@/components/common/Nav";
 import notify from "@/components/common/Notify";
-import { getAllApplications } from "@/services/applicationService";
+import Verified from "@/components/element/Verified";
+import {
+	getAllApplications,
+	getSearchedApplications,
+} from "@/services/applicationService";
 import { ApplicationAttributes, UserDetails } from "@/utils/interface";
 import Head from "next/head";
 import Image from "next/image";
@@ -12,7 +16,7 @@ function Applications() {
 	const router = useRouter();
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [token, setToken] = useState("");
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true);
 
 	const [allApplications, setAllApplications] = useState<
 		ApplicationAttributes[] | []
@@ -24,20 +28,34 @@ function Applications() {
 	const [sortField, setSortField] = useState<string>("");
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
+	const getApplications = async () => {
+		let { isError, message, applications }: any = await getAllApplications();
+
+		if (isError) {
+			notify(message, "warning");
+		} else {
+			setAllApplications(applications);
+			setFilteredApplications(applications);
+		}
+
+		setLoading(false);
+	};
+
+	const getSearched = async (query: string) => {
+		let { isError, message, applications }: any =
+			await getSearchedApplications(query);
+
+		if (isError) {
+			notify(message, "warning");
+		} else {
+			console.log(applications);
+			setAllApplications(applications);
+			setFilteredApplications(applications);
+		}
+
+		setLoading(false);
+	};
 	useEffect(() => {
-		const getApplications = async () => {
-			let { isError, message, applications }: any =
-				await getAllApplications();
-
-			if (isError) {
-				notify(message, "warning");
-			} else {
-				setAllApplications(applications);
-				setFilteredApplications(applications);
-			}
-
-			setLoading(false)
-		};
 		const userDetails = localStorage.getItem("userInfo");
 		const token = localStorage.getItem("token");
 		if (userDetails && token) {
@@ -45,11 +63,20 @@ function Applications() {
 			console.log(token);
 			setToken(token);
 			setUserDetails(parsedUserDetails);
-			getApplications();
+			if (router.isReady) {
+				let searchValue = router.query.searchValue as string;
+				console.log(searchValue);
+
+				if (searchValue) {
+					getSearched(searchValue);
+				} else {
+					getApplications();
+				}
+			}
 		} else {
 			router.push("/login");
 		}
-	}, []);
+	}, [router, router.isReady, router.query.searchValue]);
 
 	const handleFilter = (
 		experience: string,
@@ -62,7 +89,7 @@ function Applications() {
 		let filtered = allApplications;
 
 		if (experience) {
-			filtered = filtered.filter((app) => app.experience === experience);
+			filtered = filtered.filter((app) => app.experience <= experience);
 		}
 
 		if (language) {
@@ -220,6 +247,15 @@ function Applications() {
 															{application.endDate}
 														</dd>
 
+														<dt className="sr-only">
+															No of Openings
+														</dt>
+														<dd className="text-sm text-gray-500">
+															<span className="text-gray-700 font-semibold">{`No of Openings: `}</span>
+
+															{application.no_of_openings}
+														</dd>
+
 														<dt className="sr-only">Languages</dt>
 														<dd className="text-sm text-gray-500 flex gap-2">
 															<span className="text-gray-700 font-semibold">{`Languages: `}</span>
@@ -249,8 +285,13 @@ function Applications() {
 															className="h-16 w-16 flex-shrink-0 rounded-full border-black p-1"
 															priority
 														/>
-														<h3 className="mt-3 text-xl font-medium text-gray-900">
-															{application.user.name}
+														<h3 className="mt-1 font-semibold text-xl text-gray-900 flex flex-col gap-1">
+															<span>
+																{application?.user?.name}
+															</span>{" "}
+															{application?.user.verified && (
+																<Verified />
+															)}
 														</h3>
 													</div>
 												</div>
