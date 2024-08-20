@@ -247,7 +247,7 @@ const links = [
 const aboutStats = [
 	{ name: "Offices worldwide", value: "12" },
 	{ name: "Full-time colleagues", value: "300+" },
-	{ name: "Hours per week", value: "40" },
+	{ name: "Hours per week", value: "30" },
 	{ name: "Paid time off", value: "Unlimited" },
 ];
 
@@ -293,9 +293,7 @@ const About = () => {
 						Work with us
 					</h2>
 					<p className="mt-6 text-lg leading-8 text-gray-300">
-						Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure
-						qui lorem cupidatat commodo. Elit sunt amet fugiat veniam
-						occaecat fugiat aliqua.
+					Creatorships is a platform dedicated to empowering creators by connecting them with opportunities and like-minded individuals. Designed to simplify the creative process, our user-friendly interface allows creators to showcase their skills, collaborate on projects, and grow their personal brand. Whether you’re a seasoned professional or just starting out, Creatorships offers the tools and support you need to thrive in the digital world. Join us and be part of a vibrant community where creativity meets opportunity.
 					</p>
 				</div>
 				<div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
