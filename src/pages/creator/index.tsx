@@ -186,6 +186,12 @@ function Creator() {
 							>
 								Sort by New creators
 							</button>
+							<button
+								className="px-4 py-2 bg-blue-500 text-white rounded"
+								onClick={() => router.push("/creator")}
+							>
+								Reset filters
+							</button>
 						</>
 					</div>
 					{/* Main content goes here */}

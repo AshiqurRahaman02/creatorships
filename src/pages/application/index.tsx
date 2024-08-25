@@ -88,8 +88,14 @@ function Applications() {
 
 		let filtered = allApplications;
 
-		if (experience) {
-			filtered = filtered.filter((app) => app.experience <= experience);
+		// Convert experience to a number if it's a valid number string
+		const experienceNumber = Number(experience);
+
+		if (experience && !isNaN(experienceNumber)) {
+			filtered = filtered.filter((app) => {
+				const appExperience = Number(app.experience); // Ensure app.experience is also a number
+				return appExperience <= experienceNumber;
+			});
 		}
 
 		if (language) {
@@ -201,6 +207,12 @@ function Applications() {
 							>
 								Sort by No of Openings
 							</button>
+							<button
+								className="px-4 py-2 bg-blue-500 text-white rounded"
+								onClick={() => router.push("/application")}
+							>
+								Reset filters
+							</button>
 						</>
 					</div>
 					{/* Main content goes here */}
@@ -228,7 +240,7 @@ function Applications() {
 												style={{ maxWidth: "400px" }}
 											>
 												<div className="flex flex-1 flex-col p-8">
-													<dl className="mt-1 flex flex-grow flex-col gap-3 justify-between">
+													<dl className="mt-1 flex flex-grow flex-col gap-2 justify-between">
 														<dt className="sr-only">Title</dt>
 														<dd className="text-3xl text-black font-semibold">
 															{application.heading}
@@ -254,6 +266,13 @@ function Applications() {
 															<span className="text-gray-700 font-semibold">{`No of Openings: `}</span>
 
 															{application.no_of_openings}
+														</dd>
+
+														<dt className="sr-only">Experince</dt>
+														<dd className="text-sm text-gray-500">
+															<span className="text-gray-700 font-semibold">{`No of Openings: `}</span>
+
+															{application.experience}
 														</dd>
 
 														<dt className="sr-only">Languages</dt>
