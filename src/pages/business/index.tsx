@@ -183,6 +183,12 @@ function Business() {
 							>
 								Sort by Creation Date
 							</button>
+							<button
+								className="px-4 py-2 bg-blue-500 text-white rounded"
+								onClick={() => router.push("/business")}
+							>
+								Reset filters
+							</button>
 						</>
 					</div>
 
