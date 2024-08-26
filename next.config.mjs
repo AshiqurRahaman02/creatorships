@@ -20,6 +20,12 @@ const nextConfig = {
         hostname: 'i.pravatar.cc',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'flowbite.s3.amazonaws.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

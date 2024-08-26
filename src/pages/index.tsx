@@ -4,12 +4,16 @@ import NumberInc from "@/components/element/NumberInc";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import CardContent from "@mui/material/CardContent";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import { CardActionArea } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
 	const [userDetails, setUserDetails] = useState<any | null>(null);
-
 	const router = useRouter();
 
 	useEffect(() => {
@@ -34,7 +38,7 @@ export default function Home() {
 			<Blogs />
 			<div className="relative isolate overflow-hidden bg-gray-900">
 				<Newsletter />
-				<hr className="mt-20 h-0.5 border mx-20" />
+				<hr className="mt-20 h-0.5 border mx-4 lg:mx-20" />
 				<Footer />
 				<div
 					aria-hidden="true"
@@ -68,7 +72,10 @@ const HeroSection = ({ userDetails, router }: any) => {
 					className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
 				/>
 			</div>
-			<div className="mx-auto max-w-2xl py-20 sm:py-20 lg:py-36">
+			<div
+				className="mx-auto max-w-2xl py-20 sm:py-20 lg:py-36"
+				style={{ marginTop: "-80px", marginBottom: "-120px" }}
+			>
 				<div className="hidden sm:mb-8 sm:flex sm:justify-center">
 					<div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
 						Join our community of creators and businesses{" "}
@@ -84,12 +91,14 @@ const HeroSection = ({ userDetails, router }: any) => {
 				</div>
 				<div className="text-center">
 					<h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-						Empower Your Creative Journey
+						Get the perfect Partnership
 					</h1>
 					<p className="mt-6 text-lg leading-8 text-gray-600">
-						{`Unlock exclusive resources, connect with fellow creators, and gain access to tools that will help you grow your audience and monetize your passion. Elevate your creativity with us.`}
+						{`At Creatorship we help creators utilise their social presence by finding them a established business or statup, form creatorship and get a share of it.
+
+And help businesses find a creator with social influence and impact that would yeild growth for their company generate business. We facilitate this partnership to get a win-win situation for all.`}
 					</p>
-					<div className="mt-10 flex items-center justify-center gap-x-6">
+					<div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-4">
 						<button
 							onClick={() => {
 								if (!userDetails) {
@@ -111,39 +120,12 @@ const HeroSection = ({ userDetails, router }: any) => {
 							Learn more <span aria-hidden="true">→</span>
 						</button>
 					</div>
-					{/* <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-xl mt-10">
-						{`Don't forget to explore`}
-					</h1> */}
+
 					<h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-3xl mt-10">
 						{`Looking for `}
 					</h1>
-					{/* <div className="mt-5 flex items-center justify-center gap-x-6">
-						<button
-							onClick={() => {
-								if (!userDetails) {
-									router.push("/login");
-								} else {
-									router.push("/creator");
-								}
-							}}
-							className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-						>
-							Creators
-						</button>
-						<button
-							onClick={() => {
-								if (!userDetails) {
-									router.push("/login");
-								} else {
-									router.push("/business");
-								}
-							}}
-							className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-						>
-							Businesses
-						</button>
-					</div> */}
-					<div className="mt-5 flex items-center justify-center gap-x-6">
+
+					<div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-6">
 						<div
 							onClick={() => {
 								if (!userDetails) {
@@ -152,34 +134,41 @@ const HeroSection = ({ userDetails, router }: any) => {
 									router.push("/creator");
 								}
 							}}
-							className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer"
+							className="cursor-pointer"
 						>
-							<div className="relative group">
-								<Image
-									src="/assets/creator-img.png"
-									alt="creatorships-logo"
-									width={100}
-									height={100}
-									className="p-1 rounded-full"
-									priority
-									title="Creatorships Logo"
-								/>
-								<span
-									className="absolute inset-0 flex justify-center items-center invisible group-hover:visible rounded-full"
-									style={{ backgroundColor: "rgba(244,244,244,0.5)" }}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										height="24px"
-										viewBox="0 -960 960 960"
-										width="24px"
-										fill="#444"
+							<CardContent>
+								<div className="relative group">
+									<Image
+										src="/assets/images/creator-img.png"
+										alt="creatorships-logo"
+										width={250}
+										height={250}
+										className="p-1 rounded-full"
+										priority
+										title="Creatorships Logo"
+									/>
+									<span
+										className="absolute inset-0 flex justify-center items-center invisible group-hover:visible rounded-full"
+										style={{
+											backgroundColor: "rgba(244,244,244,0.5)",
+										}}
 									>
-										<path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
-									</svg>
-								</span>
-							</div>
-							<p className="text-xl">Creators</p>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											height="24px"
+											viewBox="0 -960 960 960"
+											width="24px"
+											fill="#444"
+										>
+											<path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
+										</svg>
+									</span>
+								</div>
+								<br />
+								<p className="text-center text-xl font-bold">
+									Creators
+								</p>
+							</CardContent>
 						</div>
 						<div
 							onClick={() => {
@@ -189,14 +178,14 @@ const HeroSection = ({ userDetails, router }: any) => {
 									router.push("/business");
 								}
 							}}
-							className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer"
+							className="cursor-pointer"
 						>
 							<div className="relative group">
 								<Image
-									src="/assets/business-img.png"
+									src="/assets/images/business-img.png"
 									alt="creatorships-logo"
-									width={100}
-									height={100}
+									width={250}
+									height={250}
 									className="p-1 rounded-full"
 									priority
 									title="Creatorships Logo"
@@ -216,12 +205,13 @@ const HeroSection = ({ userDetails, router }: any) => {
 									</svg>
 								</span>
 							</div>
-
-							<p className="text-xl">Businesses</p>
+							<br />
+							<p className="text-center text-xl font-bold">Businesses</p>
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<div
 				aria-hidden="true"
 				className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
@@ -253,7 +243,7 @@ const aboutStats = [
 
 const About = () => {
 	return (
-		<div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
+		<div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 mt-10">
 			<Image
 				alt=""
 				src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply"
@@ -293,18 +283,54 @@ const About = () => {
 						Work with us
 					</h2>
 					<p className="mt-6 text-lg leading-8 text-gray-300">
-					Creatorships is a platform dedicated to empowering creators by connecting them with opportunities and like-minded individuals. Designed to simplify the creative process, our user-friendly interface allows creators to showcase their skills, collaborate on projects, and grow their personal brand. Whether you’re a seasoned professional or just starting out, Creatorships offers the tools and support you need to thrive in the digital world. Join us and be part of a vibrant community where creativity meets opportunity.
+						Creatorship is a platform that acts as a mediator and
+						arbitrator for business deals and brand contracts between
+						creators and businesses.
 					</p>
 				</div>
+				<div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none text-white">
+					<div className="flex gap-5 items-center mb-8">
+						<div className=" border rounded-full p-1 w-16 h-16 grid place-content-center">
+							<h1 className="text-4xl font-bold leading-9 tracking-tight text-white">
+								1
+							</h1>
+						</div>
+						<div className="flex flex-col-reverse">
+							<dt className="text-base leading-7 text-gray-300">
+								Anyone with social influence can be partner with <br />{" "}
+								a business converting their social impact into asset.
+							</dt>
+							<dd className="text-2xl font-bold leading-9 tracking-tight text-white">
+								Creator
+							</dd>
+						</div>
+					</div>
+					<div className="flex gap-5 items-center">
+						<div className=" border rounded-full p-1 w-16 h-16 grid place-content-center">
+							<h1 className="text-4xl font-bold leading-9 tracking-tight text-white">
+								2
+							</h1>
+						</div>
+						<div className="flex flex-col-reverse">
+							<dt className="text-base leading-7 text-gray-300">
+								Every business either small or big needs market <br />{" "}
+								reach to grow and generate buusiness.
+							</dt>
+							<dd className="text-2xl font-bold leading-9 tracking-tight text-white">
+								Business
+							</dd>
+						</div>
+					</div>
+				</div>
 				<div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
-					<div className="grid grid-cols-1 gap-x-8 gap-y-6 text-base font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
+					{/* <div className="grid grid-cols-1 gap-x-8 gap-y-6 text-base font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
 						{links.map((link) => (
 							<a key={link.name} href={link.href}>
 								{link.name} <span aria-hidden="true">&rarr;</span>
 							</a>
 						))}
-					</div>
-					<dl className="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
+					</div> */}
+					{/* <dl className="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
 						{aboutStats.map((stat) => (
 							<div key={stat.name} className="flex flex-col-reverse">
 								<dt className="text-base leading-7 text-gray-300">
@@ -315,7 +341,7 @@ const About = () => {
 								</dd>
 							</div>
 						))}
-					</dl>
+					</dl> */}
 				</div>
 			</div>
 		</div>
@@ -324,27 +350,39 @@ const About = () => {
 
 const features = [
 	{
-		name: "Instant Publishing",
+		name: "Creators and Influencers",
 		description:
-			"Easily publish your content with one click. Share your creativity with the world effortlessly.",
+			"Whether you are a Youtuber, Instagram & Facebook Influencer or a successful sportsman, we cater creators from every platform and neish, and demand never falls.",
 		icon: "/icon/publish.svg",
 	},
 	{
-		name: "Exclusive Content Access",
+		name: "Earn with your social presence",
 		description:
-			"Provide your audience with exclusive content. Build deeper connections and reward your loyal followers.",
+			"Businesses are ready to pay hundreds of thousands of dollars in brand deals. Whats better is get a share of it. Become the face of business and earn with your social presence.",
 		icon: "/icon/file.svg",
 	},
 	{
-		name: "Streamlined Collaboration",
+		name: "Expand your customer base",
 		description:
-			"Collaborate with other creators smoothly. Manage projects and ideas efficiently with our tools.",
+			"Gain new customers, build trust, reach new markets with the influence of our creators. Trading a small share of profits in return of exponential growth potential.",
 		icon: "/icon/collaboration.svg",
 	},
 	{
-		name: "Enhanced Security",
+		name: "From Startups to Enterprises",
 		description:
-			"Keep your content and personal information secure. Our advanced security measures protect your creative work.",
+			"Our database has data from multiple startups and business monitoring servers like crunchbase. So any new successfully funded startup in the market, we know it.",
+		icon: "/icon/publish.svg",
+	},
+	{
+		name: "Partnership Contracts",
+		description:
+			"We facilitate signing of contracts and deals, ensuring the promise of work. The no of impressions creator has to make and the percentage of ownership a business would spare for it.",
+		icon: "/icon/encrypted.svg",
+	},
+	{
+		name: "Legals and Security",
+		description:
+			"Businesses get what they paid for and a proper compensation for the time and effort of creator is assured by our legal team. Our legal team studies the local, national and international laws to ensure compliance.",
 		icon: "/icon/encrypted.svg",
 	},
 ];
@@ -361,9 +399,9 @@ const Features = () => {
 						Everything you need to explore your need
 					</p>
 					<p className="mt-6 text-lg leading-8 text-gray-600">
-						Quis tellus eget adipiscing convallis sit sit eget aliquet
-						quis. Suspendisse eget egestas a elementum pulvinar et feugiat
-						blandit at. In mi viverra elit nunc.
+						{
+							"We are a team of competent professionals, here to get you your partner. Be it your search, partnership, deal or legals, we'll get it done."
+						}
 					</p>
 				</div>
 				<div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
@@ -406,13 +444,13 @@ function getCurrentDate() {
 }
 
 const stats = [
-	{ id: 1, name: "Transactions every 30 days", value: getCurrentDate() },
+	{ id: 1, name: "Business Partners", value: 12 },
 	{
 		id: 2,
-		name: "Assets under holding",
-		value: Math.floor(new Date().getTime() / 10),
+		name: "Startups",
+		value: 10,
 	},
-	{ id: 3, name: "New users annually", value: 35000 },
+	{ id: 3, name: "Successful Professionals", value: 500 },
 ];
 
 const Stats = () => {
@@ -440,7 +478,7 @@ const Stats = () => {
 		};
 	}, []);
 	return (
-		<div className="bg-white py-16 sm:py-16">
+		<div className="bg-white mt-10 ">
 			<div className="mx-auto max-w-3xl lg:text-center">
 				<h2 className="text-base font-semibold leading-7 text-indigo-600">
 					Safe Transaction
@@ -449,9 +487,12 @@ const Stats = () => {
 					Trusted by creators and businesses from over 100+ countries
 				</p>
 				<p className="mt-6 text-lg leading-8 text-gray-600">
-					Quis tellus eget adipiscing convallis sit sit eget aliquet quis.
-					Suspendisse eget egestas a elementum pulvinar et feugiat blandit
-					at. In mi viverra elit nunc.
+					Persist Venture the parent company of Creatorship, have already
+					proven to be a very successful startup. We have helped multiple
+					companies get right employees, teams, resources and investments
+					to grow their business exponentially. Also we have guided and
+					trained multiple professionals helping them get job in their
+					dream professions.
 				</p>
 			</div>{" "}
 			<div className="mx-auto max-w-7xl px-6 lg:px-8 mt-10">
@@ -469,12 +510,16 @@ const Stats = () => {
 								ref={ref}
 								className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl"
 							>
-								{stat.id === 2 && `$`}{" "}
-								<NumberInc
-									number={stat.value}
-									speed={20}
-									startAnimation={startAnimation}
-								/>
+								{/* {stat.id === 2 && `$`}{" "} */}
+								{stat.value > 100 ? (
+									<NumberInc
+										number={stat.value}
+										speed={20}
+										startAnimation={startAnimation}
+									/>
+								) : (
+									stat.value
+								)}
 								{"+"}
 							</dd>
 						</div>
@@ -495,8 +540,9 @@ const Newsletter = () => {
 							Subscribe to our newsletter.
 						</h2>
 						<p className="mt-4 text-lg leading-8 text-gray-300">
-							Nostrud amet eu ullamco nisi aute in ad minim nostrud
-							adipisicing velit quis. Duis tempor incididunt dolore.
+							Stay updated with the latest insights and tips directly to
+							your inbox. We bring you concise, relevant content every
+							week.
 						</p>
 						<div className="mt-6 flex max-w-md gap-x-4">
 							<label htmlFor="email-address" className="sr-only">
@@ -536,8 +582,9 @@ const Newsletter = () => {
 								Weekly articles
 							</dt>
 							<dd className="mt-2 leading-7 text-gray-400">
-								Non laboris consequat cupidatat laborum magna. Eiusmod
-								non irure cupidatat duis commodo amet.
+								Our carefully curated articles offer actionable advice
+								and industry trends. Delivered weekly, they’re designed
+								to keep you informed and ahead of the curve.
 							</dd>
 						</div>
 						<div className="flex flex-col items-start">
@@ -554,25 +601,13 @@ const Newsletter = () => {
 							</div>
 							<dt className="mt-4 font-semibold text-white">No spam</dt>
 							<dd className="mt-2 leading-7 text-gray-400">
-								Officia excepteur ullamco ut sint duis proident non
-								adipisicing. Voluptate incididunt anim.
+								We value your trust, so we promise no spam—just useful
+								information.
 							</dd>
 						</div>
 					</dl>
 				</div>
 			</div>
-			{/* <div
-				aria-hidden="true"
-				className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl xl:-top-6"
-			>
-				<div
-					style={{
-						clipPath:
-							"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-					}}
-					className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30"
-				/>
-			</div> */}
 		</div>
 	);
 };
@@ -620,7 +655,8 @@ const Testimonials = () => {
 							What people are saying.
 						</h1>
 						<h3 className="text-xl mb-5 font-light">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit.
+							Have a glimps on what our clients have to say about
+							creatorship and their experience with us.
 						</h3>
 						<div className="text-center mb-10">
 							<span className="inline-block w-1 h-1 rounded-full bg-indigo-500 ml-1"></span>
@@ -630,7 +666,7 @@ const Testimonials = () => {
 							<span className="inline-block w-1 h-1 rounded-full bg-indigo-500 ml-1"></span>
 						</div>
 					</div>
-					<div className="-mx-3 grid grid-cols-3 md:grid-cols-2 sm:grid-cols-1 w-full">
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 						{testimonials.map((testimonial, index) => (
 							<div className="px-3" key={index}>
 								<div className=" mx-auto rounded-lg bg-white border border-gray-200 p-5 text-gray-800 font-light mb-6">

@@ -26,7 +26,7 @@
 }
 
 .inputForm {
-	border: 1.5px solid #ecedec;
+	border: 1.5px solid #c6c8c6;
 	border-radius: 10px;
 	height: 50px;
 	display: flex;
@@ -37,10 +37,12 @@
 
 .input {
 	margin-left: 10px;
+	padding-left: 10px;
 	border-radius: 10px;
 	border: none;
 	width: 85%;
 	height: 95%;
+	background-color: transparent;
 }
 input[type=number]{
     max-width: 160px;
@@ -116,7 +118,7 @@ input[type=number]::-webkit-outer-spin-button {
 	align-items: center;
 	font-weight: 500;
 	gap: 10px;
-	border: 1px solid #ededef;
+	border: 1px solid #c6c8c6;
 	background-color: white;
 	cursor: pointer;
 	transition: 0.2s ease-in-out;
@@ -124,4 +126,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 .btn:hover {
 	border: 1px solid #2d79f3;
+}
+
+.register-avatars > img{
+	position: relative;
+	border-radius: 50%;
 }

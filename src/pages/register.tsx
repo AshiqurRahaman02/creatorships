@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/router";
 import GenerateOtpButton from "@/components/element/GenerateOtpButton";
 import { handleSendOtp } from "@/services/mailService";
+import Image from "next/image";
 
 function SignUp() {
 	const [type, setType] = useState<"" | "creator" | "business">("");
@@ -84,12 +85,31 @@ function SignUp() {
 	};
 
 	return (
-		<div>
+		<div className="relative px-6 lg:px-8">
+			<div
+				aria-hidden="true"
+				className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+			>
+				<div
+					style={{
+						clipPath:
+							"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+					}}
+					className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+				/>
+			</div>
 			<div className="min-h-[calc(100vh-5vh)]  text-gray-900 flex justify-center">
-				<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+				<div className="max-w-screen-xl m-0 sm:m-10 bg-transparent shadow sm:rounded-lg flex justify-center flex-1">
 					<div className="h-full flex items-center">
 						{type ? (
-							<form className="form" onSubmit={handleSignUpSubmit}>
+							<form
+								className="form "
+								style={{
+									backgroundColor: "#ffffff40",
+									backdropFilter: "blur(55px)",
+								}}
+								onSubmit={handleSignUpSubmit}
+							>
 								<FormInput
 									label={`${
 										type === "creator" ? "Personal" : "Company"
@@ -169,6 +189,11 @@ function SignUp() {
 											<span
 												className="border p-1 mr-1 cursor-pointer"
 												title="verify otp"
+												style={{
+													border: "1.5px solid #c6c8c6",
+													borderTopRightRadius: "7px",
+													borderBottomRightRadius: "7px",
+												}}
 												onClick={() => {
 													if (sentOtp === +otp) {
 														setEmailVerified(true);
@@ -350,7 +375,13 @@ function SignUp() {
 								</div>
 							</form>
 						) : (
-							<div className="flex flex-col gap-2 form">
+							<div
+								className="flex flex-col gap-2 form"
+								style={{
+									backgroundColor: "#ffffff40",
+									backdropFilter: "blur(55px)",
+								}}
+							>
 								<div
 									className="inputForm cursor-pointer hover:border-blue-500 flex gap-4"
 									style={{ height: "100px" }}
@@ -400,15 +431,87 @@ function SignUp() {
 							</div>
 						)}
 					</div>
-					<div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+					<div className="flex-1  text-left hidden lg:flex">
 						<div
-							className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+							className="xl:m-16 w-full bg-contain bg-center bg-no-repeat flex flex-col gap-5 items-left justify-center"
 							style={{
-								backgroundImage: `url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')`,
+								backdropFilter: "blur(55px)",
 							}}
-						></div>
+						>
+							<div
+								className="flex items-center cursor-pointer"
+								onClick={() => router.push("/")}
+							>
+								<Image
+									src="/assets/images/creatorships-logo.png"
+									alt="creatorships-logo"
+									width={50}
+									height={60}
+									className="p-1 "
+									priority
+									title="Creatorships Logo"
+								/>
+								<h1 className="text-2xl  relative top-1">
+									CREATORSHIP
+								</h1>
+							</div>
+							<h1 className="text-4xl font-bold tracking-tight text-blue-900 sm:text-6xl text-left">
+								Join Our Creative Community
+							</h1>
+							<p className="mt-6 text-lg leading-8 text-gray-600">
+								{`Whether you're a creator looking to grow your audience or a business seeking to connect with influencers, we're here to help you succeed. Sign up today to unlock exclusive tools, resources, and opportunities that will elevate your passion to new heights.`}
+							</p>
+
+							<div className="flex gap-5 items-center">
+								<div className="flex items-center register-avatars">
+									<Image
+										src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
+										alt="bonnie avatar"
+										width={50}
+										height={50}
+										
+									/>
+									<Image
+										src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
+										alt="jese avatar"
+										width={50}
+										height={50}
+										className="-left-4"
+									/>
+									<Image
+										src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png"
+										alt="roberta avatar"
+										width={50}
+										height={50}
+										className="-left-10"
+									/>
+									<Image
+										src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png"
+										alt="thomas avatar"
+										width={50}
+										height={50}
+										className="-left-16"
+									/>
+								</div>
+								<hr className="w-0.5 h-10 bg-gray-400 relative -left-8"/>
+								<p>Over 500 Happy Customers</p>
+							</div>
+						</div>
 					</div>
 				</div>
+			</div>
+
+			<div
+				aria-hidden="true"
+				className="absolute inset-x-0 top-[calc(100%-40rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-45rem)]"
+			>
+				<div
+					style={{
+						clipPath:
+							"polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+					}}
+					className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+				/>
 			</div>
 
 			{loading && <Loading />}
