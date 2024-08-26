@@ -27,7 +27,7 @@ const GenerateOtpButton: React.FC<GenerateOtpButtonProps> = ({onClickFunction}) 
 	};
 
 	const startTimer = () => {
-		const otpTimer = 120; // 2 minutes
+		const otpTimer = 60; // 1 minutes
 		setTimer(otpTimer);
 
 		const interval = setInterval(() => {
@@ -71,6 +71,7 @@ const GenerateOtpButton: React.FC<GenerateOtpButtonProps> = ({onClickFunction}) 
         className={`border p-3 rounded-md flex items-center ${
             loading || timer ? "cursor-not-allowed opacity-50" : ""
         }`}
+		style={{border: "1.5px solid #c6c8c6"}}
         onClick={handleClick}
         disabled={loading || timer !== null}
     >

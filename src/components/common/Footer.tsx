@@ -8,7 +8,6 @@ type FooterSection = {
 type FooterData = {
 	services: FooterSection;
 	company: FooterSection;
-	helpfulLinks: FooterSection;
 	legal: FooterSection;
 	downloads: FooterSection;
 };
@@ -17,33 +16,30 @@ const footerData: FooterData = {
 	services: {
 		title: "Services",
 		links: [
-			"1on1 Coaching",
+			"1on1 Guiding Services",
 			"Company Review",
-			"Accounts Review",
+			"Profilie Review",
 			"HR Consulting",
 			"SEO Optimisation",
 		],
 	},
 	company: {
 		title: "Company",
-		links: ["About", "Meet the Team", "Accounts Review"],
-	},
-	helpfulLinks: {
-		title: "Helpful Links",
-		links: ["Contact", "FAQs", "Live Chat"],
+		links: ["About", "Meet the Team","Contact", "FAQs"],
 	},
 	legal: {
 		title: "Legal",
 		links: [
 			"Accessibility",
-			"Returns Policy",
-			"Refund Policy",
-			"Hiring Statistics",
+			"Agreement Policy",
+			"Contract Policy",
+			"Cancellation Policy",
+			"Partnerships Statistics",
 		],
 	},
 	downloads: {
 		title: "Downloads",
-		links: ["Marketing Calendar", "SEO Infographics"],
+		links: ["Marketing Calendar", "SEO Infographics", ""],
 	},
 };
 

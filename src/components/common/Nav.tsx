@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Button from '@mui/material/Button';
 import Search from "../element/Search";
 
 function Nav() {
@@ -46,7 +47,7 @@ function Nav() {
 				onClick={() => router.push("/")}
 			>
 				<Image
-					src="/assets/creatorships-logo.png"
+					src="/assets/images/creatorships-logo.png"
 					alt="creatorships-logo"
 					width={70}
 					height={80}
@@ -54,51 +55,24 @@ function Nav() {
 					priority
 					title="Creatorships Logo"
 				/>
-				<h1 className="text-5xl bebas-neue-regular relative top-1">
+				<h1 className="text-2xl  relative top-1">
 					CREATORSHIP
 				</h1>
 			</div>
 			<Search />
-			<div className="flex justify-between items-center gap-5">
-				<div
-					onClick={() => router.push("/chat")}
-					className="cursor-pointer"
-				>
-					<Image
-						src="/icon/chat.svg"
-						alt="chat-svg"
-						width={40}
-						height={24}
-						className="p-0 "
-						priority
-						title="Chat"
-					/>
-				</div>
+			<div className="flex justify-between items-center gap-5">	
 				<div>
 					{userDetails ? (
 						<>
-							<button
-								className="relative px-10 py-3.5 overflow-hidden group bg-gradient-to-r from-yellow-500 to-pink-700 hover:bg-gradient-to-r hover:from-pink-700 hover:to-yellow-500 text-white transition-all ease-out duration-300 rounded-lg cursor-pointer"
-								onClick={() => router.push("/account")}
-							>
-								<span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-36 ease"></span>
-								<span className="relative text-xl font-semibold">
-									{userDetails?.name[0].toUpperCase() +
+							<Button style={{background:'#2F27FF'}} variant="contained" onClick={() => router.push("/account")}>
+								{userDetails?.name[0].toUpperCase() +
 										userDetails?.name.slice(1)}
-								</span>
-							</button>
+										</Button> 
 						</>
 					) : (
 						<>
-							<button
-								className="relative px-10 py-3.5 overflow-hidden group bg-gradient-to-r from-yellow-500 to-pink-700 hover:bg-gradient-to-r hover:from-pink-700 hover:to-yellow-500 text-white transition-all ease-out duration-300 rounded-lg cursor-pointer"
-								onClick={() => router.push("/login")}
-							>
-								<span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-36 ease"></span>
-								<span className="relative text-xl font-semibold">
-									Log in
-								</span>
-							</button>
+				<Button style={{background:'#2F27FF'}} variant="contained">Sign up</Button> &nbsp;
+							<Button  variant="outlined" onClick={() => router.push("/login")}>Sign in</Button> 
 						</>
 					)}
 				</div>

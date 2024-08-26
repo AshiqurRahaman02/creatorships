@@ -51,10 +51,7 @@ const SignIn = () => {
 			<div className="min-h-screen text-gray-900 flex justify-center">
 				<div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
 					<div className="h-full flex items-center">
-						<form
-							className="form h-min"
-							onSubmit={handleSignInSubmit}
-						>
+						<form className="form h-min" onSubmit={handleSignInSubmit}>
 							<FormInput
 								label={`Email`}
 								type="text"
@@ -228,13 +225,20 @@ const SignIn = () => {
 							</div>
 						</form>
 					</div>
-					<div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+					<div className="flex-1  text-center hidden lg:flex">
 						<div
-							className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+							className="xl:m-16 w-full bg-contain bg-center bg-no-repeat flex flex-col items-center justify-center"
 							style={{
-								backgroundImage: `url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')`,
+								backgroundImage: `url('/assets/images/creator Signup image.png')`,
 							}}
-						></div>
+						>
+							<h1 className="text-4xl font-bold tracking-tight text-blue-900 sm:text-6xl">
+							Welcome Back!
+							</h1>
+							<p className="mt-6 text-lg leading-8 text-gray-600">
+								{`You're just a step away from continuing your creative journey. Log in to access your dashboard, connect with your community, and make the most of the tools and resources designed to help you thrive.`}
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
