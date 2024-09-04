@@ -295,7 +295,7 @@ function SignUp() {
 									className="button-submit"
 									onClick={handleSignUpSubmit}
 								>
-									Sign Up
+									Start Your Journey Now
 								</button>
 								<p className="p">
 									{"Don't have an account? "}
