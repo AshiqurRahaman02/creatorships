@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 import Search from "../element/Search";
 
 function Nav() {
@@ -36,11 +36,16 @@ function Nav() {
 
 	return (
 		<div
-			className={`sticky w-full flex justify-between items-center px-1 z-20 transform transition-transform duration-300 ease-in-out ${
+			className={`sticky w-full rounded-2xl flex justify-between items-center px-5 z-20 transform transition-transform duration-300 ease-in-out ${
 				isVisible
-					? "top-0 translate-y-0 backdrop-blur-sm shadow-sm"
+					? "top-5 translate-y-0 backdrop-blur-sm shadow-sm"
 					: "-top-20 -translate-y-full backdrop-blur-0 shadow-none"
-			} bg-white`}
+			} `}
+			style={{
+				backgroundColor: "#ffffff20",
+				border: "1px solid #c6c8c6",
+				backdropFilter: "blur(10px)",
+			}}
 		>
 			<div
 				className="flex justify-between items-center cursor-pointer"
@@ -55,24 +60,37 @@ function Nav() {
 					priority
 					title="Creatorships Logo"
 				/>
-				<h1 className="text-2xl  relative top-1">
-					CREATORSHIP
-				</h1>
+				<h1 className="text-2xl  relative top-1">CREATORSHIP</h1>
 			</div>
-			<Search />
-			<div className="flex justify-between items-center gap-5">	
+			{/* <Search /> */}
+			<div className="flex justify-between items-center gap-5">
 				<div>
 					{userDetails ? (
 						<>
-							<Button style={{background:'#2F27FF'}} variant="contained" onClick={() => router.push("/account")}>
+							<Button
+								style={{ background: "#2F27FF" }}
+								variant="contained"
+								onClick={() => router.push("/account")}
+							>
 								{userDetails?.name[0].toUpperCase() +
-										userDetails?.name.slice(1)}
-										</Button> 
+									userDetails?.name.slice(1)}
+							</Button>
 						</>
 					) : (
 						<>
-				<Button style={{background:'#2F27FF'}} variant="contained">Sign up</Button> &nbsp;
-							<Button  variant="outlined" onClick={() => router.push("/login")}>Sign in</Button> 
+							<Button
+								style={{ background: "#2F27FF" }}
+								variant="contained"
+							>
+								Sign up
+							</Button>{" "}
+							&nbsp;
+							<Button
+								variant="outlined"
+								onClick={() => router.push("/login")}
+							>
+								Sign in
+							</Button>
 						</>
 					)}
 				</div>
